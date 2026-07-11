@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint (biome)
+        run: npm run lint
+      - name: Build & test
+        run: npm test
+      - name: Self-audit — this repo must stay L4
+        run: node packages/cli/dist/cli.js . --min-level 4
+      - name: Docs build
+        run: npm run docs:build

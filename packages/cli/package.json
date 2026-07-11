@@ -1,0 +1,48 @@
+{
+  "name": "harness-score",
+  "version": "0.1.0",
+  "description": "Deterministic harness-maturity scanner for AI-assisted repositories (Cursor-first). Zero LLM calls, zero network, zero runtime dependencies.",
+  "type": "module",
+  "bin": {
+    "harness-score": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "cursor",
+    "harness-engineering",
+    "ai-assisted-development",
+    "agents",
+    "guardrails",
+    "maturity-model",
+    "static-analysis",
+    "cli"
+  ],
+  "author": "Fernando Paladini",
+  "license": "MIT",
+  "homepage": "https://paladini.github.io/harness-score/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paladini/harness-score.git",
+    "directory": "packages/cli"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  }
+}

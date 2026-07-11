@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+*.tsbuildinfo
+
+# Environment files — never commit secrets
+.env
+.env.*
+!.env.example
+
+# Coverage & caches
+coverage/
+.cache/
+.husky/_/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db

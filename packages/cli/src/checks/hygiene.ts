@@ -1,0 +1,176 @@
+import type { Check, ScanContext } from '../types.js';
+import { findSecret } from '../util.js';
+import { detectEcosystems } from './sensors.js';
+
+const ENV_FILE_RE = /(^|\/)\.env(\.[^/]+)?$/;
+const ENV_TEMPLATE_RE = /\.(example|sample|template|dist)$/;
+const MCP_RE = /(^|\/)\.cursor\/mcp\.json$/;
+
+function gitignoreCoversEnv(ctx: ScanContext): boolean {
+  const content = ctx.read('.gitignore');
+  if (content === null) return false;
+  return content.split(/\r?\n/).some((l) => /^\s*\*?\*?\/?\.env/.test(l.trim()));
+}
+
+const LOCKFILES: Array<{ file: string; ecosystems: string[] }> = [
+  { file: 'package-lock.json', ecosystems: ['node'] },
+  { file: 'pnpm-lock.yaml', ecosystems: ['node'] },
+  { file: 'yarn.lock', ecosystems: ['node'] },
+  { file: 'bun.lockb', ecosystems: ['node'] },
+  { file: 'bun.lock', ecosystems: ['node'] },
+  { file: 'uv.lock', ecosystems: ['python'] },
+  { file: 'poetry.lock', ecosystems: ['python'] },
+  { file: 'Pipfile.lock', ecosystems: ['python'] },
+  { file: 'requirements.txt', ecosystems: ['python'] },
+  { file: 'go.sum', ecosystems: ['go'] },
+  { file: 'Cargo.lock', ecosystems: ['rust'] },
+  { file: 'composer.lock', ecosystems: ['php'] },
+  { file: 'Gemfile.lock', ecosystems: ['ruby'] },
+];
+
+export const hygieneChecks: Check[] = [
+  {
+    id: 'HYG-01',
+    dimension: 'hygiene',
+    title: '.gitignore present',
+    points: 2,
+    remediation:
+      'Add a .gitignore — agents commit what they see; make sure build output and local state are invisible.',
+    run(ctx) {
+      return ctx.has('.gitignore')
+        ? { passed: true, evidence: '.gitignore found at repository root.' }
+        : { passed: false, evidence: 'No .gitignore at repository root.' };
+    },
+  },
+  {
+    id: 'HYG-02',
+    dimension: 'hygiene',
+    title: '.gitignore covers environment files',
+    points: 3,
+    remediation: 'Add ".env" and ".env.*" to .gitignore so an agent can never stage credentials by accident.',
+    run(ctx) {
+      if (!ctx.has('.gitignore')) {
+        return { passed: false, evidence: 'No .gitignore to inspect.' };
+      }
+      return gitignoreCoversEnv(ctx)
+        ? { passed: true, evidence: '.gitignore contains a .env pattern.' }
+        : { passed: false, evidence: '.gitignore has no .env pattern.' };
+    },
+  },
+  {
+    id: 'HYG-03',
+    dimension: 'hygiene',
+    title: 'No unprotected .env files in the tree',
+    points: 4,
+    remediation:
+      "Remove committed .env files (keep only .env.example) or at minimum ensure .gitignore excludes them — env files in an agent's working tree leak into context and commits.",
+    run(ctx) {
+      const envFiles = ctx.files.filter((f) => ENV_FILE_RE.test(f) && !ENV_TEMPLATE_RE.test(f));
+      if (envFiles.length === 0) {
+        return {
+          passed: true,
+          evidence: 'No real .env files in the tree (templates like .env.example are fine).',
+        };
+      }
+      const covered = gitignoreCoversEnv(ctx);
+      return covered
+        ? { passed: true, evidence: `${envFiles.length} .env file(s) present but covered by .gitignore.` }
+        : { passed: false, evidence: `Unignored env file(s): ${envFiles.slice(0, 3).join(', ')}.` };
+    },
+  },
+  {
+    id: 'HYG-04',
+    dimension: 'hygiene',
+    title: 'MCP configuration free of credentials',
+    points: 4,
+    remediation:
+      'Never inline API keys in .cursor/mcp.json — use environment variable interpolation (${VAR}) and document required variables in .env.example.',
+    run(ctx) {
+      const mcpFiles = ctx.matching(MCP_RE);
+      if (mcpFiles.length === 0) {
+        return { passed: true, evidence: 'No .cursor/mcp.json in repository (nothing to leak).' };
+      }
+      for (const file of mcpFiles) {
+        const content = ctx.read(file) ?? '';
+        const secret = findSecret(content);
+        if (secret) {
+          return { passed: false, evidence: `${file} contains what looks like a ${secret}.` };
+        }
+      }
+      return { passed: true, evidence: `${mcpFiles.join(', ')}: no credential signatures found.` };
+    },
+  },
+  {
+    id: 'HYG-05',
+    dimension: 'hygiene',
+    title: 'License present',
+    points: 2,
+    remediation: 'Add a LICENSE file — required for open-source distribution and for the Cursor Marketplace.',
+    run(ctx) {
+      const license = ['LICENSE', 'LICENSE.md', 'LICENSE.txt', 'COPYING'].find((f) => ctx.has(f));
+      return license
+        ? { passed: true, evidence: `Found ${license}.` }
+        : { passed: false, evidence: 'No LICENSE file at repository root.' };
+    },
+  },
+  {
+    id: 'HYG-06',
+    dimension: 'hygiene',
+    title: 'No credential signatures in harness files',
+    points: 2,
+    remediation:
+      'Remove any API keys or tokens from AGENTS.md, rules, and hooks configuration — harness files are loaded into model context on every session.',
+    run(ctx) {
+      const harnessFiles = [
+        'AGENTS.md',
+        'CLAUDE.md',
+        'README.md',
+        '.cursor/hooks.json',
+        ...ctx.matching(/(^|\/)\.cursor\/rules\/[^/]+\.mdc$/),
+      ].filter((f) => ctx.has(f));
+      for (const file of harnessFiles) {
+        const secret = findSecret(ctx.read(file) ?? '');
+        if (secret) {
+          return { passed: false, evidence: `${file} contains what looks like a ${secret}.` };
+        }
+      }
+      return {
+        passed: true,
+        evidence:
+          harnessFiles.length > 0
+            ? `Scanned ${harnessFiles.length} harness file(s); no credential signatures.`
+            : 'No harness files present to scan.',
+      };
+    },
+  },
+  {
+    id: 'HYG-07',
+    dimension: 'hygiene',
+    title: 'Dependency lockfile committed',
+    points: 3,
+    remediation:
+      "Commit the lockfile (package-lock.json, uv.lock, Cargo.lock…) — reproducible installs mean the agent's sensors run against the same dependencies everywhere.",
+    run(ctx) {
+      const ecosystems = detectEcosystems(ctx);
+      const lockable = LOCKFILES.filter((l) =>
+        l.ecosystems.some((e) => (ecosystems as string[]).includes(e)),
+      );
+      if (lockable.length === 0) {
+        return {
+          passed: true,
+          evidence:
+            ecosystems.length === 0
+              ? 'No dependency manifest detected (nothing to lock).'
+              : `No lockfile convention applies to: ${ecosystems.join(', ')}.`,
+        };
+      }
+      const found = lockable.find((l) => ctx.has(l.file));
+      return found
+        ? { passed: true, evidence: `Found ${found.file}.` }
+        : {
+            passed: false,
+            evidence: `Manifest present but no lockfile (expected one of: ${[...new Set(lockable.map((l) => l.file))].join(', ')}).`,
+          };
+    },
+  },
+];

@@ -1,0 +1,74 @@
+name: 'Harness Score'
+description: >-
+  Deterministic AI-harness maturity audit (Cursor-first): scans the repository,
+  reports a maturity level (L0–L4), optionally fails the build below a minimum
+  level, and emits an SVG badge and markdown report.
+author: 'Fernando Paladini'
+branding:
+  icon: 'shield'
+  color: 'green'
+
+inputs:
+  min-level:
+    description: 'Fail the job when the maturity level is below this (0–4). Use 0 to never fail.'
+    required: false
+    default: '0'
+  badge:
+    description: 'Path to write the SVG maturity badge (empty to skip).'
+    required: false
+    default: 'harness-badge.svg'
+  report:
+    description: 'Path to write the markdown report (empty to skip).'
+    required: false
+    default: ''
+  working-directory:
+    description: 'Directory to scan.'
+    required: false
+    default: '.'
+  version:
+    description: 'harness-score npm version to run.'
+    required: false
+    default: 'latest'
+
+outputs:
+  level:
+    description: 'Maturity level index (0–4).'
+    value: ${{ steps.scan.outputs.level }}
+  level-name:
+    description: 'Maturity level name (Unharnessed … Self-correcting).'
+    value: ${{ steps.scan.outputs.level-name }}
+  percent:
+    description: 'Total score percentage.'
+    value: ${{ steps.scan.outputs.percent }}
+
+runs:
+  using: 'composite'
+  steps:
+    - id: scan
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        set -euo pipefail
+        ARGS=(--quiet --json)
+        [ -n "${{ inputs.badge }}" ] && ARGS+=(--badge "${{ inputs.badge }}")
+        [ -n "${{ inputs.report }}" ] && ARGS+=(--md "${{ inputs.report }}")
+        npx -y "harness-score@${{ inputs.version }}" . "${ARGS[@]}" > harness-report.json
+
+        LEVEL=$(node -p "JSON.parse(require('fs').readFileSync('harness-report.json','utf8')).level.index")
+        NAME=$(node -p "JSON.parse(require('fs').readFileSync('harness-report.json','utf8')).level.name")
+        PERCENT=$(node -p "JSON.parse(require('fs').readFileSync('harness-report.json','utf8')).score.percent")
+        echo "level=$LEVEL" >> "$GITHUB_OUTPUT"
+        echo "level-name=$NAME" >> "$GITHUB_OUTPUT"
+        echo "percent=$PERCENT" >> "$GITHUB_OUTPUT"
+        echo "## Harness Score: L$LEVEL · $NAME ($PERCENT%)" >> "$GITHUB_STEP_SUMMARY"
+        node -e "
+          const r = JSON.parse(require('fs').readFileSync('harness-report.json','utf8'));
+          const rows = r.dimensions.map(d => '| ' + d.title + ' | ' + d.earned + '/' + d.max + ' | ' + d.percent + '% |').join('\n');
+          require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY, '\n| Dimension | Score | % |\n|---|---|---|\n' + rows + '\n');
+        "
+
+        if [ "$LEVEL" -lt "${{ inputs.min-level }}" ]; then
+          echo "::error::Harness maturity L$LEVEL is below required L${{ inputs.min-level }}."
+          node -p "JSON.parse(require('fs').readFileSync('harness-report.json','utf8')).level.nextLevelGaps.join('; ')"
+          exit 1
+        fi
