@@ -14,18 +14,22 @@ description: Use when the user asks to release, publish, or version-bump harness
      — only if plugin content changed, it has its own release track
 3. Commit `release: vX.Y.Z`, tag `vX.Y.Z`, push with tags.
 4. Create a GitHub Release from that tag (`gh release create vX.Y.Z --generate-notes`)
-   — this fires `.github/workflows/release.yml`, which publishes to:
-   - **npmjs.org** as `harness-score` (needs the `NPM_TOKEN` repo secret —
-     an npm "Automation" token, so it bypasses the 2FA/OTP prompt in CI; the
-     user creates and sets this, not you)
+   — this fires `.github/workflows/release.yml`, which publishes to all
+   three registries via OIDC, no secrets stored anywhere:
+   - **npmjs.org** as `harness-score`, via
+     [Trusted Publishing](https://docs.npmjs.com/trusted-publishers) — the
+     user configures this once on the package's npmjs.com settings page
+     (repo + workflow filename), then every CI run authenticates
+     automatically, bypassing the 2FA/OTP prompt entirely.
    - **GitHub Packages** as `@paladini/harness-score` (automatic, uses the
-     built-in `GITHUB_TOKEN`, no secret needed)
-   - **JSR** as `@paladini/harness-score` (automatic via OIDC, no secret
-     needed — but the scope must be claimed once by the user at jsr.io/new
-     before the first publish succeeds)
-5. If npm publish must happen before the CI secret exists, the user runs
-   `npm publish -w harness-score` locally and approves the OTP in their
-   browser — this step cannot be automated by an agent.
+     built-in `GITHUB_TOKEN`, no secret needed — the repo's Actions
+     "Workflow permissions" must be set to Read and write).
+   - **JSR** as `@paladini/harness-score` (automatic via OIDC — but the
+     scope must be claimed once by the user at jsr.io/new before the first
+     publish succeeds).
+5. If npm Trusted Publishing isn't configured yet, `npm publish` in CI will
+   fail with a clear error; the user completes the one-time npmjs.com setup
+   and the next run succeeds — no manual local publish needed once it's on.
 6. Marketplace: the plugin updates from the repo — remind the user to
    resubmit at https://cursor.com/marketplace/publish only if plugin
    metadata changed.

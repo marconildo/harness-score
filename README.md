@@ -129,8 +129,13 @@ Monorepo layout, conventions, and the rubric-sync rule live in
 ## Publishing checklist (maintainer)
 
 1. **npm**: bump `packages/cli/package.json` version and `TOOL_VERSION` in
-   `packages/cli/src/score.ts` together, then `npm publish -w harness-score`.
-   The account has 2FA — npm will print a browser URL to approve the OTP.
+   `packages/cli/src/score.ts` together. Publishing is automatic via
+   [release.yml](.github/workflows/release.yml) using
+   [Trusted Publishing](https://docs.npmjs.com/trusted-publishers) (OIDC) —
+   no token, no secret, no 2FA prompt. One-time setup: on the
+   [package's settings page](https://www.npmjs.com/package/harness-score/access),
+   add a Trusted Publisher with repo `paladini/harness-score` and workflow
+   `release.yml`.
 2. **GitHub Packages**: automatic. [release.yml](.github/workflows/release.yml)
    publishes `@paladini/harness-score` on every GitHub Release using the
    built-in `GITHUB_TOKEN` — no secret to manage.
