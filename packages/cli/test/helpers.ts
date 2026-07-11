@@ -6,6 +6,7 @@ export function fakeContext(files: Record<string, string>): ScanContext {
   return {
     root: '/fake',
     files: paths,
+    truncated: false,
     has: (p) => Object.hasOwn(files, p),
     read: (p) => (Object.hasOwn(files, p) ? files[p]! : null),
     matching: (re) => paths.filter((p) => re.test(p)),

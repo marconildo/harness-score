@@ -154,14 +154,22 @@ export const hookChecks: Check[] = [
       }
       // Only validate commands that reference an in-repo path; interpreter
       // invocations (node x, python x) are checked via their last path token.
+      // Tokenizer is quote-aware (so a quoted path with spaces stays one
+      // token); path tokens are normalized (quotes stripped, backslashes
+      // converted to forward slashes) before resolving, since ScanContext
+      // paths are always POSIX-style regardless of the hooks.json author's OS.
       const missing: string[] = [];
       let validated = 0;
       for (const command of commands) {
-        const tokens = command.split(/\s+/).filter(Boolean);
-        const pathTokens = tokens.filter((t) => t.includes('/') && !t.startsWith('-'));
+        const tokens = command.match(/"[^"]*"|'[^']*'|\S+/g) ?? [];
+        const pathTokens = tokens.filter((t) => (t.includes('/') || t.includes('\\')) && !t.startsWith('-'));
         if (pathTokens.length === 0) continue;
         validated += 1;
-        const resolvable = pathTokens.some((t) => ctx.has(t.replace(/^\.\//, '')));
+        const resolvable = pathTokens.some((t) => {
+          const unquoted = t.replace(/^["']|["']$/g, '');
+          const normalized = unquoted.replace(/^\.[\\/]/, '').replace(/\\/g, '/');
+          return ctx.has(normalized);
+        });
         if (!resolvable) missing.push(command);
       }
       if (validated === 0) {

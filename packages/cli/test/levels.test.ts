@@ -21,6 +21,7 @@ describe('maturity levels on fixture repositories', () => {
     const report = score(path.join(FIXTURES, 'level-4'));
     expect(report.tool.name).toBe('harness-score');
     expect(report.score.max).toBe(100);
+    expect(report.truncated).toBe(false);
     expect(report.dimensions).toHaveLength(6);
     for (const check of report.checks) {
       expect(check.id).toMatch(/^[A-Z]{2,3}-\d{2}$/);

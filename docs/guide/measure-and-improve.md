@@ -11,7 +11,7 @@ telemetry), runs 33 deterministic checks, and reports a maturity level with
 the exact gaps to the next one:
 
 ```
-  harness-score v0.1.1  /work/my-app
+  harness-score v0.1.2  /work/my-app
 
   Maturity: L2 · Guided   Score: 61/100 (61%)
 

@@ -21,7 +21,7 @@ function ciContent(ctx: ScanContext): string {
 }
 
 const TEST_CMD_RE =
-  /((npm|pnpm|yarn|bun)\s+(run\s+)?test)|vitest|\bjest\b|pytest|go\s+test|cargo\s+test|mvn\s+(test|verify)|gradle\w*\s+(test|check)|rake\s+test|phpunit|dotnet\s+test/i;
+  /((npm|pnpm|yarn|bun)\s+(run\s+)?test)|vitest|\bjest\b|pytest|go\s+test|cargo\s+test|mvn\s+(test|verify)|gradle\w*\s+(test|check)|rake\s+test|phpunit|dotnet\s+test|\btest\b/i;
 const LINT_CMD_RE =
   /\blint\b|eslint|biome|ruff|flake8|pylint|clippy|golangci|tsc\b|typecheck|type-check|mypy|pyright|rubocop|phpstan|checkstyle/i;
 

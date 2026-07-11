@@ -20,6 +20,8 @@ export interface ScanContext {
   root: string;
   /** All file paths relative to root, POSIX separators, sorted. */
   files: string[];
+  /** True if the scan hit MAX_FILES and stopped before the tree was fully walked. */
+  truncated: boolean;
   /** True when the relative path exists as a file. */
   has(relPath: string): boolean;
   /** File content as UTF-8, or null when missing/unreadable. Cached. */
@@ -77,6 +79,8 @@ export interface LevelInfo {
 export interface Report {
   tool: { name: string; version: string };
   root: string;
+  /** True if the scan hit its file-count cap before fully walking the tree — results may be incomplete. */
+  truncated: boolean;
   level: LevelInfo;
   score: { earned: number; max: number; percent: number };
   dimensions: DimensionScore[];

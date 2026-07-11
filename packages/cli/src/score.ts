@@ -11,7 +11,7 @@ import type {
 import { DIMENSIONS } from './types.js';
 
 export const DOCS_BASE_URL = 'https://paladini.github.io/harness-score/guide/measure-and-improve';
-export const TOOL_VERSION = '0.1.1';
+export const TOOL_VERSION = '0.1.2';
 
 export const LEVEL_NAMES = ['Unharnessed', 'Documented', 'Guided', 'Sensing', 'Self-correcting'] as const;
 
@@ -109,6 +109,7 @@ export function buildReport(ctx: ScanContext): Report {
   return {
     tool: { name: 'harness-score', version: TOOL_VERSION },
     root: ctx.root,
+    truncated: ctx.truncated,
     level: computeLevel(dimensions, percent),
     score: { earned, max, percent },
     dimensions,

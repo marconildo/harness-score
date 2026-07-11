@@ -21,19 +21,44 @@ const SKIP_DIRS = new Set([
   '.cache',
   '.turbo',
   '.idea',
+  '.nx',
+  '.pnp',
+  '.parcel-cache',
+  '.angular',
+  '.pytest_cache',
+  '.mypy_cache',
+  '.ruff_cache',
 ]);
+
+/**
+ * Specific relative paths to skip rather than whole directory names — e.g.
+ * `.yarn/` itself holds legitimate config (`.yarnrc.yml`, `.yarn/plugins`)
+ * alongside huge generated content that must not be blanket-excluded by name.
+ */
+const SKIP_RELATIVE_PATHS = new Set(['.yarn/cache', '.yarn/unplugged', '.yarn/install-state.gz']);
 
 const MAX_DEPTH = 10;
 const MAX_FILES = 20000;
 /** Never read file bodies larger than this (binary/artifact protection). */
 const MAX_READ_BYTES = 512 * 1024;
 
-function walk(root: string): string[] {
+function safeRealpath(p: string): string | null {
+  try {
+    return fs.realpathSync(p);
+  } catch {
+    return null;
+  }
+}
+
+function walk(root: string): { files: string[]; truncated: boolean } {
   const files: string[] = [];
+  let truncated = false;
+  const visitedRealDirs = new Set<string>([safeRealpath(root) ?? root]);
   const stack: Array<{ abs: string; rel: string; depth: number }> = [{ abs: root, rel: '', depth: 0 }];
-  while (stack.length > 0) {
+
+  outer: while (stack.length > 0) {
     const dir = stack.pop()!;
-    if (dir.depth > MAX_DEPTH || files.length >= MAX_FILES) continue;
+    if (dir.depth > MAX_DEPTH) continue;
     let entries: fs.Dirent[];
     try {
       entries = fs.readdirSync(dir.abs, { withFileTypes: true });
@@ -42,29 +67,55 @@ function walk(root: string): string[] {
     }
     for (const entry of entries) {
       const rel = dir.rel === '' ? entry.name : `${dir.rel}/${entry.name}`;
-      if (entry.isDirectory()) {
-        if (!SKIP_DIRS.has(entry.name)) {
-          stack.push({ abs: path.join(dir.abs, entry.name), rel, depth: dir.depth + 1 });
+      if (SKIP_RELATIVE_PATHS.has(rel)) continue;
+
+      const abs = path.join(dir.abs, entry.name);
+      let isDir = entry.isDirectory();
+      let isFile = entry.isFile();
+
+      if (entry.isSymbolicLink()) {
+        let stat: fs.Stats;
+        try {
+          stat = fs.statSync(abs); // follows the symlink, unlike lstatSync
+        } catch {
+          continue; // broken symlink target
         }
-      } else if (entry.isFile()) {
+        isDir = stat.isDirectory();
+        isFile = stat.isFile();
+      }
+
+      if (isDir) {
+        if (SKIP_DIRS.has(entry.name)) continue;
+        // Dedup by real path so symlink cycles (and hardlink-style repeats)
+        // can't loop forever; readdirSync/statSync below still follow the
+        // symlink transparently via its own (non-resolved) `abs` path.
+        const real = safeRealpath(abs) ?? abs;
+        if (visitedRealDirs.has(real)) continue;
+        visitedRealDirs.add(real);
+        stack.push({ abs, rel, depth: dir.depth + 1 });
+      } else if (isFile) {
+        if (files.length >= MAX_FILES) {
+          truncated = true;
+          break outer;
+        }
         files.push(rel);
-        if (files.length >= MAX_FILES) break;
       }
     }
   }
   files.sort();
-  return files;
+  return { files, truncated };
 }
 
 export function createScanContext(rootInput: string): ScanContext {
   const root = path.resolve(rootInput);
-  const files = walk(root);
+  const { files, truncated } = walk(root);
   const fileSet = new Set(files);
   const contentCache = new Map<string, string | null>();
 
   return {
     root,
     files,
+    truncated,
     has(relPath: string): boolean {
       return fileSet.has(relPath);
     },

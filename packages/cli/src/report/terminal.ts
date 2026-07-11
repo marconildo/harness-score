@@ -23,6 +23,12 @@ export function renderTerminal(report: Report): string {
   lines.push('');
   lines.push(bold(`  harness-score v${report.tool.version}`) + dim(`  ${report.root}`));
   lines.push('');
+  if (report.truncated) {
+    lines.push(
+      yellow('  ⚠ Scan stopped early after hitting the file-count cap — results below may be incomplete.'),
+    );
+    lines.push('');
+  }
   lines.push(
     `  ${bold('Maturity:')} ${levelPaint(bold(`L${report.level.index} · ${report.level.name}`))}` +
       `   ${bold('Score:')} ${report.score.earned}/${report.score.max} (${report.score.percent}%)`,

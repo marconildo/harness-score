@@ -49,6 +49,53 @@ describe('hook checks', () => {
     });
     expect((await check('HKS-05')).run(ctx).passed).toBe(false);
   });
+
+  test('HKS-05 resolves backslash-style Windows paths when the script exists', async () => {
+    const ctx = fakeContext({
+      '.cursor/hooks.json': JSON.stringify({
+        version: 1,
+        hooks: { beforeShellExecution: [{ command: 'node .cursor\\hooks\\guard.js' }] },
+      }),
+      '.cursor/hooks/guard.js': '// present',
+    });
+    expect((await check('HKS-05')).run(ctx).passed).toBe(true);
+  });
+
+  test('HKS-05 flags backslash-style paths when the script is actually missing', async () => {
+    const ctx = fakeContext({
+      '.cursor/hooks.json': JSON.stringify({
+        version: 1,
+        hooks: { beforeShellExecution: [{ command: 'node .cursor\\hooks\\missing.js' }] },
+      }),
+    });
+    expect((await check('HKS-05')).run(ctx).passed).toBe(false);
+  });
+
+  test('HKS-05 resolves a quoted path with trailing arguments', async () => {
+    const ctx = fakeContext({
+      '.cursor/hooks.json': JSON.stringify({
+        version: 1,
+        hooks: { beforeShellExecution: [{ command: '"./.cursor/hooks/guard.sh" --arg' }] },
+      }),
+      '.cursor/hooks/guard.sh': '#!/bin/sh',
+    });
+    expect((await check('HKS-05')).run(ctx).passed).toBe(true);
+  });
+});
+
+describe('ci checks', () => {
+  test('CI-02 recognizes turbo/nx/pnpm-filter monorepo test invocations', async () => {
+    const turbo = fakeContext({ '.github/workflows/ci.yml': 'run: turbo run test' });
+    expect((await check('CI-02')).run(turbo).passed).toBe(true);
+
+    const pnpmFilter = fakeContext({ '.github/workflows/ci.yml': 'run: pnpm --filter api test' });
+    expect((await check('CI-02')).run(pnpmFilter).passed).toBe(true);
+  });
+
+  test('CI-02 does not match "test" inside unrelated words', async () => {
+    const ctx = fakeContext({ '.github/workflows/ci.yml': 'run: echo "latest build attestation"' });
+    expect((await check('CI-02')).run(ctx).passed).toBe(false);
+  });
 });
 
 describe('hygiene checks', () => {
