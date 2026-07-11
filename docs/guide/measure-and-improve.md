@@ -11,7 +11,7 @@ telemetry), runs 33 deterministic checks, and reports a maturity level with
 the exact gaps to the next one:
 
 ```
-  harness-score v0.1.0  /work/my-app
+  harness-score v0.1.1  /work/my-app
 
   Maturity: L2 · Guided   Score: 61/100 (61%)
 
@@ -22,6 +22,18 @@ the exact gaps to the next one:
 
   To reach L3: sensors ≥ 60%; ci ≥ 50%
 ```
+
+## Installing
+
+```bash
+npx harness-score                                       # no install
+npm install -g harness-score                            # global binary
+npm install --save-dev harness-score                    # pinned devDependency
+```
+
+Also mirrored on [GitHub Packages](https://github.com/paladini/harness-score/pkgs/npm/harness-score)
+(`@paladini/harness-score`) and [JSR](https://jsr.io/@paladini/harness-score)
+for Deno/Bun projects.
 
 ## CLI reference
 

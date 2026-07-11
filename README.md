@@ -12,6 +12,7 @@ maturity level you can measure.**
 
 [![CI](https://github.com/paladini/harness-score/actions/workflows/ci.yml/badge.svg)](https://github.com/paladini/harness-score/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/harness-score)](https://www.npmjs.com/package/harness-score)
+[![JSR](https://jsr.io/badges/@paladini/harness-score)](https://jsr.io/@paladini/harness-score)
 [![docs](https://img.shields.io/badge/guide-github%20pages-blue)](https://paladini.github.io/harness-score/)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -58,19 +59,43 @@ Levels gate on the *shape* of your harness, not just points — 80 points of
 documentation with zero tests is not maturity. Full rubric:
 [the Maturity Model](https://paladini.github.io/harness-score/guide/maturity-model).
 
+## Install
+
+No install needed — just run it:
+
+```bash
+npx harness-score
+```
+
+Or install it, for repeated / offline / CI use:
+
+```bash
+npm install -g harness-score        # global binary
+npm install --save-dev harness-score # pinned in a repo's devDependencies
+```
+
+Mirrored on other registries, in case npm is unreachable or you prefer a
+different ecosystem:
+
+| Registry | Package | Install |
+|---|---|---|
+| **npm** | [`harness-score`](https://www.npmjs.com/package/harness-score) | `npm install -g harness-score` |
+| **GitHub Packages** | [`@paladini/harness-score`](https://github.com/paladini/harness-score/pkgs/npm/harness-score) | `npm install -g @paladini/harness-score --registry=https://npm.pkg.github.com` |
+| **JSR** (Deno/Bun) | [`@paladini/harness-score`](https://jsr.io/@paladini/harness-score) | `deno run npm:harness-score` or `npx jsr add @paladini/harness-score` |
+
 ## Quick start
 
 ```bash
 # score a repository
-npx harness-score
+harness-score            # or: npx harness-score
 
 # machine-readable / markdown / badge
-npx harness-score --json
-npx harness-score --md report.md
-npx harness-score --badge harness-badge.svg
+harness-score --json
+harness-score --md report.md
+harness-score --badge harness-badge.svg
 
 # gate CI: fail below L3
-npx harness-score --min-level 3
+harness-score --min-level 3
 ```
 
 Or in CI:
@@ -103,11 +128,20 @@ Monorepo layout, conventions, and the rubric-sync rule live in
 
 ## Publishing checklist (maintainer)
 
-1. **npm**: `npm publish -w harness-score` (after `npm login`).
-2. **GitHub Pages**: Settings → Pages → Source: *GitHub Actions*; the
+1. **npm**: bump `packages/cli/package.json` version and `TOOL_VERSION` in
+   `packages/cli/src/score.ts` together, then `npm publish -w harness-score`.
+   The account has 2FA — npm will print a browser URL to approve the OTP.
+2. **GitHub Packages**: automatic. [release.yml](.github/workflows/release.yml)
+   publishes `@paladini/harness-score` on every GitHub Release using the
+   built-in `GITHUB_TOKEN` — no secret to manage.
+3. **JSR**: automatic via the same workflow, using
+   [OIDC](https://jsr.io/docs/publishing-packages#publishing-from-github-actions) —
+   no token at all. First publish requires claiming the scope once at
+   [jsr.io](https://jsr.io/new).
+4. **GitHub Pages**: Settings → Pages → Source: *GitHub Actions*; the
    [pages.yml](.github/workflows/pages.yml) workflow deploys the guide on
    push to `main`.
-3. **Cursor Marketplace**: submit the public repo at
+5. **Cursor Marketplace**: submit the public repo at
    [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish)
    (plugins are open source and manually reviewed; the manifest lives at
    [plugin/.cursor-plugin/plugin.json](plugin/.cursor-plugin/plugin.json)).

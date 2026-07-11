@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    if: ${{ vars.SKIP_NPM_PUBLISH != 'true' }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - run: npm run build -w harness-score
+      - name: Publish to npmjs.org
+        if: ${{ secrets.NPM_TOKEN != '' }}
+        run: npm publish -w harness-score --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Skip notice
+        if: ${{ secrets.NPM_TOKEN == '' }}
+        run: |
+          echo "::warning::NPM_TOKEN secret is not set — skipping npmjs.org publish."
+          echo "Create an 'Automation' token at https://www.npmjs.com/settings/~/tokens" \
+               "and add it with: gh secret set NPM_TOKEN"
+
+  github-packages:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://npm.pkg.github.com
+          scope: '@paladini'
+      - run: npm ci
+      - run: npm run build -w harness-score
+      - name: Publish to GitHub Packages as @paladini/harness-score
+        run: |
+          npm pkg set name=@paladini/harness-score -w harness-score
+          npm publish -w harness-score
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  jsr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Publish to JSR
+        continue-on-error: true
+        working-directory: packages/cli
+        run: npx -y jsr publish --allow-slow-types
