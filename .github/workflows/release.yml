@@ -62,6 +62,5 @@ jobs:
         with:
           node-version: 22
       - name: Publish to JSR
-        continue-on-error: true
         working-directory: packages/cli
         run: npx -y jsr publish --allow-slow-types
