@@ -115,5 +115,6 @@ can honestly claim.
    effort (L1: write AGENTS.md → L2: rules + hygiene → L3: sensors + CI →
    L4: hooks).
 3. Gate the level in CI (`--min-level`) so maturity only ratchets up.
+4. Show it off — [badges and banner cards](/guide/measure-and-improve#show-your-maturity) for every level, with a free auto-updating README badge.
 
 Chapter 7 walks each step, check by check.

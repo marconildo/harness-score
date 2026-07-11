@@ -29,6 +29,9 @@ features:
   - icon: 📏
     title: A maturity model you can measure
     details: Five levels, six dimensions, thirty-three deterministic checks. `npx harness-score` — no LLM calls, no network, no telemetry.
+  - icon: 🏷️
+    title: Badges you can show off
+    details: Branded SVG badges and banner cards for every level (L0–L4). Wire the scanner into CI once and your README badge updates itself — free, no shields.io.
 ---
 
 ## One command, zero AI

@@ -13,7 +13,7 @@
     <rect x="12" y="13" width="4" height="8" rx="2" fill="url(#hs-fill)"/>
     <rect x="19" y="9" width="4" height="12" rx="2" fill="url(#hs-fill)"/>
     <rect x="26" y="5" width="4" height="16" rx="2" fill="url(#hs-fill)"/>
-    <text x="38" y="20" textLength="52.1" lengthAdjust="spacingAndGlyphs" font-family="'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#e9f2ee">harness</text>
-    <text x="114" y="20" textLength="124.5" lengthAdjust="spacingAndGlyphs" font-family="'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#06231a">L4 Self-correcting</text>
+    <text x="38" y="20" font-family="'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#e9f2ee">harness</text>
+    <text x="114" y="20" font-family="'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#06231a">L4 Self-correcting</text>
   </g>
 </svg>

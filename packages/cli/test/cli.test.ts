@@ -39,7 +39,7 @@ describe('cli', () => {
     expect(result.status).toBe(0);
     const svg = fs.readFileSync(badgePath, 'utf8');
     expect(svg).toContain('<svg');
-    expect(svg).toContain('harness score');
+    expect(svg).toContain('Harness Score');
     expect(svg).toContain('L3');
     fs.unlinkSync(badgePath);
   });

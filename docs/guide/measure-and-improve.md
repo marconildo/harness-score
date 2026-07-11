@@ -78,6 +78,99 @@ Or use the packaged action, which also emits the badge:
     badge: 'harness-badge.svg'
 ```
 
+## Show your maturity {#show-your-maturity}
+
+Harness Score ships **branded SVG badges and banner cards** in the same visual
+language as the scanner's progress bars — no shields.io, no paid service, no
+network at render time.
+
+### Option A — automatic badge (recommended)
+
+`harness-score --badge` writes an SVG for whatever level the scanner detects.
+Wire it into CI once; the README image updates itself as your harness improves.
+
+```yaml
+# .github/workflows/harness.yml
+name: Harness Score
+on: { push: { branches: [main] } }
+permissions: { contents: write }
+jobs:
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: paladini/harness-score/action@main
+        with: { badge: 'harness-badge.svg' }
+      - uses: JamesIves/github-pages-deploy-action@v4
+        with: { branch: badges, folder: ., clean: false }
+```
+
+Reference the published file from your README:
+
+```md
+![Harness Score](https://raw.githubusercontent.com/<you>/<repo>/badges/harness-badge.svg)
+```
+
+Every badge uses a **fixed width and font size** — `L2 · Guided 52%` and
+`L4 · Self-correcting 100%` look the same; only the text changes.
+
+This guide's site dogfoods the pattern — the live badge below is regenerated
+on every Pages deploy:
+
+![Harness Score](https://paladini.github.io/harness-score/harness-badge.svg)
+
+The matching banner card for the detected level is published as
+`harness-card.svg` (currently L4 for this repository):
+
+![Harness Score banner](https://paladini.github.io/harness-score/harness-card.svg)
+
+### Option B — pin a specific level
+
+Prefer a static image? Pick the badge or banner for your level (`l0`–`l4`):
+
+```md
+[![Harness Score](https://paladini.github.io/harness-score/maturity/badge-l3.svg)](https://paladini.github.io/harness-score/)
+```
+
+| Level | Compact badge | Share card |
+|---|---|---|
+| L0 · Unharnessed | [badge-l0.svg](https://paladini.github.io/harness-score/maturity/badge-l0.svg) | [card-l0.svg](https://paladini.github.io/harness-score/maturity/card-l0.svg) |
+| L1 · Documented | [badge-l1.svg](https://paladini.github.io/harness-score/maturity/badge-l1.svg) | [card-l1.svg](https://paladini.github.io/harness-score/maturity/card-l1.svg) |
+| L2 · Guided | [badge-l2.svg](https://paladini.github.io/harness-score/maturity/badge-l2.svg) | [card-l2.svg](https://paladini.github.io/harness-score/maturity/card-l2.svg) |
+| L3 · Sensing | [badge-l3.svg](https://paladini.github.io/harness-score/maturity/badge-l3.svg) | [card-l3.svg](https://paladini.github.io/harness-score/maturity/card-l3.svg) |
+| L4 · Self-correcting | [badge-l4.svg](https://paladini.github.io/harness-score/maturity/badge-l4.svg) | [card-l4.svg](https://paladini.github.io/harness-score/maturity/card-l4.svg) |
+
+All five levels at a glance:
+
+<p>
+  <img alt="L0 · Unharnessed" src="/maturity/badge-l0.svg" height="28">
+  <img alt="L1 · Documented" src="/maturity/badge-l1.svg" height="28">
+  <img alt="L2 · Guided" src="/maturity/badge-l2.svg" height="28">
+  <img alt="L3 · Sensing" src="/maturity/badge-l3.svg" height="28">
+  <img alt="L4 · Self-correcting" src="/maturity/badge-l4.svg" height="28">
+</p>
+
+<p>
+  <img alt="L0 · Unharnessed" src="/maturity/card-l0.svg" width="100%">
+</p>
+<p>
+  <img alt="L1 · Documented" src="/maturity/card-l1.svg" width="100%">
+</p>
+<p>
+  <img alt="L2 · Guided" src="/maturity/card-l2.svg" width="100%">
+</p>
+<p>
+  <img alt="L3 · Sensing" src="/maturity/card-l3.svg" width="100%">
+</p>
+<p>
+  <img alt="L4 · Self-correcting" src="/maturity/card-l4.svg" width="100%">
+</p>
+
+> **shields.io fan?** Your Action can also write a small JSON file and point a
+> [shields endpoint](https://shields.io/badges/endpoint-badge) at it
+> (`{ "schemaVersion": 1, "label": "harness", "message": "L3 · Sensing", "color": "brightgreen" }`).
+> The brand SVGs above are self-contained and need no third party.
+
 ## The check catalog {#the-check-catalog}
 
 Every check the scanner runs, with its remediation recipe. Check IDs are

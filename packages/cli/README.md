@@ -82,6 +82,10 @@ TypeScript types.
 Or use the [packaged GitHub Action](https://github.com/paladini/harness-score/tree/main/action),
 which also emits the badge.
 
+Branded README badges and banner cards for every level (L0–L4), including a
+free auto-updating CI pattern:
+[Show your maturity](https://paladini.github.io/harness-score/guide/measure-and-improve#show-your-maturity).
+
 ## Cursor plugin
 
 Install **Harness Score** from the
