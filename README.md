@@ -134,16 +134,17 @@ deterministic scanner can claim.
 
 ## Show your maturity in your README
 
-Harness Score ships **three branded SVG artifacts** — free, self-contained, no
+Harness Score ships **two branded SVG formats** — free, self-contained, no
 shields.io subscription:
 
-| Artifact | Shows | Best for |
+| Format | Shows | Best for |
 |---|---|---|
-| **Live badge** (`harness-badge.svg`) | `harness` · `L4` | README row — updates when your level changes |
-| **Compact badge** (`badge-l0`–`l4`) | `harness` · `L3` | Pin a level (no long name) |
+| **Badge** (`harness-badge.svg` or `badge-l0`–`l4`) | `harness` · `L4` | README row (112×20) |
 | **Share card** (`card-l0`–`l4`) | Full banner with level name | Social posts, repo hero |
 
-**Live badge (recommended)** — updates itself when your level changes:
+The pill looks the same whether CI regenerates it or you pin a static file.
+
+**Auto-updating badge (recommended)** — CI writes `harness-badge.svg` on every run:
 
 ```yaml
 # .github/workflows/harness.yml
@@ -156,13 +157,13 @@ shields.io subscription:
 <img alt="Harness Score" src="https://raw.githubusercontent.com/<you>/<repo>/badges/harness-badge.svg" height="20">
 ```
 
-**Compact badge** — pin a level (`l0`–`l4`); same pill, static file:
+**Pinned badge** — same pill, static `badge-lN.svg`:
 
 ```md
 <img alt="Harness Score L3" src="https://paladini.github.io/harness-score/maturity/badge-l3.svg" height="20">
 ```
 
-All five compact badges:
+All five badge levels:
 
 <p align="center">
   <img alt="L0" src="https://paladini.github.io/harness-score/maturity/badge-l0.svg" height="20">

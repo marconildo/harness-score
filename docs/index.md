@@ -31,7 +31,7 @@ features:
     details: Five levels, six dimensions, thirty-three deterministic checks. `npx harness-score` — no LLM calls, no network, no telemetry.
   - icon: 🏷️
     title: Badges you can show off
-    details: Three branded SVGs — live pill (`harness` · `L4`), compact pill per level, and share cards with full names. Wire the scanner into CI once; your README badge updates itself. Free, no shields.io.
+    details: Two SVG formats — a 20px README pill (`harness` · `L4`) and a share card with the level name. Wire `--badge` into CI for auto-update, or pin a static file. Free, no shields.io.
 ---
 
 ## One command, zero AI
@@ -48,18 +48,10 @@ the **Harness Score** plugin.
 
 ## Branded visuals
 
-Three SVG artifacts — 20px pills for README rows, banner cards for posts.
+Two SVG formats — same visual language as the scanner:
 
 <div class="hs-visual">
-  <p class="hs-visual-label">1 · Live badge</p>
-  <div class="hs-badge-row">
-    <img class="hs-badge" alt="Live badge (auto-updates)" src="/harness-badge.svg" height="20">
-  </div>
-  <p class="hs-visual-detail">Regenerated on every CI run — <code>harness</code> + detected level.</p>
-</div>
-
-<div class="hs-visual">
-  <p class="hs-visual-label">2 · Compact badges</p>
+  <p class="hs-visual-label">Badge · 112×20</p>
   <div class="hs-badge-row">
     <img class="hs-badge" alt="L0" src="/maturity/badge-l0.svg" height="20">
     <img class="hs-badge" alt="L1" src="/maturity/badge-l1.svg" height="20">
@@ -67,13 +59,13 @@ Three SVG artifacts — 20px pills for README rows, banner cards for posts.
     <img class="hs-badge" alt="L3" src="/maturity/badge-l3.svg" height="20">
     <img class="hs-badge" alt="L4" src="/maturity/badge-l4.svg" height="20">
   </div>
-  <p class="hs-visual-detail">Static files to pin a level — same pill, no auto-update.</p>
+  <p class="hs-visual-detail">README pill: <code>harness</code> + level. Same look whether CI regenerates it (<code>--badge</code>) or you pin a static <code>badge-lN.svg</code>.</p>
 </div>
 
 <div class="hs-visual">
-  <p class="hs-visual-label">3 · Share card</p>
+  <p class="hs-visual-label">Share card · 860×240</p>
   <img class="hs-share-card" alt="L4 · Self-correcting" src="/maturity/card-l4.svg">
-  <p class="hs-visual-detail">860×240 banner with the level name for social posts and repo heroes.</p>
+  <p class="hs-visual-detail">Banner with the level name — for social posts and repo heroes.</p>
 </div>
 
 Gallery, CI recipes, and embed snippets:

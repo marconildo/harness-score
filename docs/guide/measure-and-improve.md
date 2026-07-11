@@ -80,20 +80,22 @@ Or use the packaged action, which also emits the badge:
 
 ## Show your maturity {#show-your-maturity}
 
-Harness Score ships **three branded SVG artifacts** in the same visual language
+Harness Score ships **two branded SVG formats** in the same visual language
 as the scanner's progress bars — no shields.io, no paid service, no network at
 render time:
 
-| Artifact | File | Shows | Best for |
+| Format | Files | Shows | Best for |
 |---|---|---|---|
-| **Live badge** | `harness-badge.svg` | `harness` · `L4` | README row — updates when your level changes |
-| **Compact badge** | `badge-l0.svg` … `badge-l4.svg` | `harness` · `L3` | Pin a level without the long name |
-| **Share card** | `card-l0.svg` … `card-l4.svg` | Full banner with level name | Social posts, repo hero image |
+| **Badge** | `harness-badge.svg` or `badge-l0.svg` … `badge-l4.svg` | `harness` · `L4` | README row (112×20 pill) |
+| **Share card** | `card-l0.svg` … `card-l4.svg` | Full banner with level name | Social posts, repo hero (860×240) |
 
-Compact and live badges show **only the level** (`L0`–`L4`). Level names
+The badge always shows **only the level** (`L0`–`L4`). Level names
 (Unharnessed, Guided, …) live on the share cards and in the scanner output.
 
-### Option A — live badge (recommended)
+The pill looks identical whether CI regenerates it or you pin a static file —
+only the wiring differs.
+
+### Badge — auto-updating (recommended)
 
 `harness-score --badge` writes an SVG for whatever level the scanner detects.
 Wire it into CI once; the README image updates itself as your harness improves.
@@ -127,35 +129,36 @@ the same row (112×20 SVG; level only — score percent stays in the CLI report)
 <img alt="Harness Score" src="https://paladini.github.io/harness-score/harness-badge.svg" height="20">
 ```
 
-This guide's site dogfoods the pattern — the live badge below is regenerated
-on every Pages deploy:
+This guide's site dogfoods the pattern — badge below is regenerated on every
+Pages deploy:
 
 <div class="hs-visual">
-  <p class="hs-visual-label">Live badge</p>
+  <p class="hs-visual-label">Badge (this repo)</p>
   <div class="hs-badge-row">
     <img class="hs-badge" src="/harness-badge.svg" alt="Harness Score" height="20">
   </div>
 </div>
 
-The matching banner card for the detected level is published as
+The matching share card for the detected level is published as
 `harness-card.svg` (currently L4 for this repository):
 
 <img class="hs-share-card" src="/harness-card.svg" alt="Harness Score L4 · Self-correcting">
 
-### Option B — compact badge (level only)
+### Badge — pin a level
 
-Prefer a static pill? Pick the compact badge for your level (`l0`–`l4`):
+Same pill, static file — pick `badge-l0.svg` … `badge-l4.svg` if you do not
+want CI to regenerate the image:
 
 ```md
 <img alt="Harness Score L3" src="https://paladini.github.io/harness-score/maturity/badge-l3.svg" height="20">
 ```
 
-### Option C — share card (full name)
+### Share card
 
 For a hero image or social post, use the banner card — it includes the level
 name (`Unharnessed`, `Guided`, …):
 
-| Level | Compact badge | Share card |
+| Level | Badge | Share card |
 |---|---|---|
 | L0 · Unharnessed | [badge-l0.svg](https://paladini.github.io/harness-score/maturity/badge-l0.svg) | [card-l0.svg](https://paladini.github.io/harness-score/maturity/card-l0.svg) |
 | L1 · Documented | [badge-l1.svg](https://paladini.github.io/harness-score/maturity/badge-l1.svg) | [card-l1.svg](https://paladini.github.io/harness-score/maturity/card-l1.svg) |
@@ -164,7 +167,7 @@ name (`Unharnessed`, `Guided`, …):
 | L4 · Self-correcting | [badge-l4.svg](https://paladini.github.io/harness-score/maturity/badge-l4.svg) | [card-l4.svg](https://paladini.github.io/harness-score/maturity/card-l4.svg) |
 
 <div class="hs-visual">
-  <p class="hs-visual-label">Compact badges (112×20)</p>
+  <p class="hs-visual-label">All badge levels (112×20)</p>
   <div class="hs-badge-row">
     <img class="hs-badge" alt="L0" src="/maturity/badge-l0.svg" height="20">
     <img class="hs-badge" alt="L1" src="/maturity/badge-l1.svg" height="20">

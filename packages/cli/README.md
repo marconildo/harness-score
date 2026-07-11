@@ -82,9 +82,9 @@ TypeScript types.
 Or use the [packaged GitHub Action](https://github.com/paladini/harness-score/tree/main/action),
 which also emits the badge.
 
-Three branded SVG artifacts (live pill, compact pill per level, share card):
+Two branded SVG formats (README badge + share card):
 [Show your maturity](https://paladini.github.io/harness-score/guide/measure-and-improve#show-your-maturity).
-Badges show `harness` + the level only; level names live on the share cards.
+The pill is identical from CI (`--badge`) or a pinned `badge-lN.svg`.
 
 ## Cursor plugin
 
