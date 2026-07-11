@@ -1,0 +1,43 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Harness Score">
+  <title>Harness Score</title>
+  <defs>
+    <linearGradient id="hs-tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14232f"/>
+      <stop offset="1" stop-color="#081117"/>
+    </linearGradient>
+    <linearGradient id="hs-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3ce3a3"/>
+      <stop offset="1" stop-color="#16a877"/>
+    </linearGradient>
+    <clipPath id="hs-clip">
+      <rect x="32" y="32" width="448" height="448" rx="112"/>
+    </clipPath>
+  </defs>
+
+  <!-- tile -->
+  <rect x="32" y="32" width="448" height="448" rx="112" fill="url(#hs-tile)"/>
+  <g clip-path="url(#hs-clip)">
+    <ellipse cx="256" cy="66" rx="252" ry="124" fill="#ffffff" opacity="0.045"/>
+  </g>
+  <rect x="33" y="33" width="446" height="446" rx="110" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="2"/>
+
+  <!-- dimension tracks -->
+  <g fill="#1e2f3a">
+    <rect x="96"  y="120" width="36" height="272" rx="18"/>
+    <rect x="153" y="120" width="36" height="272" rx="18"/>
+    <rect x="210" y="120" width="36" height="272" rx="18"/>
+    <rect x="267" y="120" width="36" height="272" rx="18"/>
+    <rect x="324" y="120" width="36" height="272" rx="18"/>
+    <rect x="381" y="120" width="36" height="272" rx="18"/>
+  </g>
+
+  <!-- ascending fills: the maturity climb -->
+  <g fill="url(#hs-fill)">
+    <rect x="96"  y="310" width="36" height="82"  rx="18"/>
+    <rect x="153" y="272" width="36" height="120" rx="18"/>
+    <rect x="210" y="234" width="36" height="158" rx="18"/>
+    <rect x="267" y="196" width="36" height="196" rx="18"/>
+    <rect x="324" y="158" width="36" height="234" rx="18"/>
+    <rect x="381" y="120" width="36" height="272" rx="18"/>
+  </g>
+</svg>

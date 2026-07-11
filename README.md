@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/harness-score-logo-dark.svg">
+    <img alt="Harness Score" src="brand/harness-score-logo.svg" width="440">
+  </picture>
+</p>
+
 # Harness Score
 
 **Harness engineering for Cursor repositories — a guide you can read and a

@@ -6,7 +6,9 @@ export default defineConfig({
     'The harness engineering guide for Cursor — and a deterministic scanner that measures how well-harnessed your repository is.',
   base: '/harness-score/',
   lastUpdated: true,
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/harness-score/favicon.svg' }]],
   themeConfig: {
+    logo: '/logo.svg',
     nav: [
       { text: 'Guide', link: '/guide/what-is-harness-engineering' },
       { text: 'Maturity Model', link: '/guide/maturity-model' },
