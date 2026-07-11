@@ -139,7 +139,7 @@ shields.io subscription:
 
 | Artifact | Shows | Best for |
 |---|---|---|
-| **Live badge** (`harness-badge.svg`) | `harness` · `L4 100%` | README row — updates with your score |
+| **Live badge** (`harness-badge.svg`) | `harness` · `L4` | README row — updates when your level changes |
 | **Compact badge** (`badge-l0`–`l4`) | `harness` · `L3` | Pin a level (no long name) |
 | **Share card** (`card-l0`–`l4`) | Full banner with level name | Social posts, repo hero |
 

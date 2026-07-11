@@ -1,14 +1,5 @@
 import type { Report } from '../types.js';
 
-/** shields.io-style width estimate (Verdana 11px; errs wide so text never clips). */
-function textWidth(text: string): number {
-  let width = 0;
-  for (const char of text) {
-    width += /[mwMW%]/.test(char) ? 10 : /[il1.:·| ]/.test(char) ? 4 : 7;
-  }
-  return width;
-}
-
 const H = 20;
 const R = 3;
 const FONT = 'Verdana,Geneva,DejaVu Sans,sans-serif';
@@ -18,6 +9,8 @@ const PAD = 7;
 
 /** Left segment: bars + "harness" — inset clears rx=3 corners at 20px height. */
 const LABEL_SEG = 76;
+/** Right segment fits L4 — keep in sync with generate.mjs BADGE_VALUE_SEG. */
+const VALUE_SEG = 36;
 const BAR_X = 10;
 const LABEL_X = 28;
 const VALUE_X = LABEL_SEG + PAD;
@@ -46,13 +39,11 @@ function badgeBody(total: number, value: string): string {
 }
 
 /**
- * shields.io pattern: height and font-size are constant; only the total width
- * grows with the message.
+ * shields.io pattern: 20px height, 11px Verdana, fixed width (level only).
  */
 export function renderBadge(report: Report): string {
-  const value = `L${report.level.index} ${report.score.percent}%`;
-  const valueSeg = textWidth(value) + PAD * 2;
-  const total = LABEL_SEG + valueSeg;
+  const value = `L${report.level.index}`;
+  const total = LABEL_SEG + VALUE_SEG;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${total}" height="${H}" viewBox="0 0 ${total} ${H}" role="img" aria-label="Harness Score ${value}">
   <title>Harness Score: ${value}</title>

@@ -86,7 +86,7 @@ render time:
 
 | Artifact | File | Shows | Best for |
 |---|---|---|---|
-| **Live badge** | `harness-badge.svg` | `harness` · `L4 100%` | README row — updates with your score |
+| **Live badge** | `harness-badge.svg` | `harness` · `L4` | README row — updates when your level changes |
 | **Compact badge** | `badge-l0.svg` … `badge-l4.svg` | `harness` · `L3` | Pin a level without the long name |
 | **Share card** | `card-l0.svg` … `card-l4.svg` | Full banner with level name | Social posts, repo hero image |
 
@@ -123,9 +123,8 @@ Reference the published file from your README:
 Set `height="20"` on the image tag so the badge aligns with shields.io badges
 in the same row.
 
-Every badge is **20px tall with 11px Verdana** (shields.io height). Width grows with
-the message so text is never clipped — `L2 52%` and `L4 100%` use the same font
-size; only the pill gets wider.
+Every badge is **20px tall with 11px Verdana** (shields.io height) and shows
+`harness` plus the level (`L0`–`L4`) only.
 In your README, set `height="20"` on the `<img>` so it lines up with npm/CI shields:
 
 ```md
