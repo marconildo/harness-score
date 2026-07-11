@@ -46,8 +46,8 @@ jobs:
       - run: npm run build -w harness-score
       - name: Publish to GitHub Packages as @paladini/harness-score
         run: |
-          npm pkg set name=@paladini/harness-score -w harness-score
-          npm publish -w harness-score
+          npm pkg set name=@paladini/harness-score -w packages/cli
+          npm publish -w packages/cli
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
