@@ -1,10 +1,67 @@
 import type { Check, ScanContext } from '../types.js';
-import { findSecret } from '../util.js';
+import { findSecret, safeJsonParse } from '../util.js';
 import { detectEcosystems } from './sensors.js';
 
 const ENV_FILE_RE = /(^|\/)\.env(\.[^/]+)?$/;
 const ENV_TEMPLATE_RE = /\.(example|sample|template|dist)$/;
 const MCP_RE = /(^|\/)\.cursor\/mcp\.json$/;
+const CREDENTIAL_WORDS = new Set(['token', 'key', 'secret', 'password', 'passwd', 'auth', 'apikey']);
+const ENV_INTERPOLATION_RE = /\$\{[A-Za-z_][A-Za-z0-9_]*\}/;
+
+/**
+ * A key is credential-shaped only if one of its camelCase/snake_case/kebab-case
+ * segments is a credential word (allowing a simple trailing-"s" plural, since
+ * an array of secrets is commonly named "apiKeys"/"tokens") — "apiKey" and
+ * "API_TOKENS" match, but "authorName" and "keyword" don't (substring
+ * matching flagged those).
+ */
+function isCredentialShapedKey(key: string): boolean {
+  const segments = key
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+    .split(/[_\-\s]+/)
+    .map((s) => s.toLowerCase())
+    .filter(Boolean);
+  return segments.some(
+    (s) => CREDENTIAL_WORDS.has(s) || (s.endsWith('s') && CREDENTIAL_WORDS.has(s.slice(0, -1))),
+  );
+}
+
+/**
+ * Recursively collect stringified values of credential-shaped keys
+ * (token/key/secret/password/…). An array found under a credential-shaped
+ * key is treated as a list of credential values itself — not recursed into
+ * generically — so e.g. `"apiKeys": ["sk-...", "sk-..."]` still surfaces
+ * both literals instead of losing the key context on recursion.
+ */
+function credentialShapedValues(node: unknown, keyIsCredential = false): string[] {
+  if (Array.isArray(node)) {
+    return node.flatMap((item) => {
+      if (
+        keyIsCredential &&
+        (typeof item === 'string' || typeof item === 'number' || typeof item === 'boolean')
+      ) {
+        return [String(item)];
+      }
+      return credentialShapedValues(item);
+    });
+  }
+  if (!node || typeof node !== 'object') return [];
+  const values: string[] = [];
+  for (const [key, value] of Object.entries(node as Record<string, unknown>)) {
+    const credential = isCredentialShapedKey(key);
+    if (
+      credential &&
+      (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean')
+    ) {
+      values.push(String(value));
+    } else if (Array.isArray(value)) {
+      values.push(...credentialShapedValues(value, credential));
+    } else if (value && typeof value === 'object') {
+      values.push(...credentialShapedValues(value));
+    }
+  }
+  return values;
+}
 
 function gitignoreCoversEnv(ctx: ScanContext): boolean {
   const content = ctx.read('.gitignore');
@@ -171,6 +228,42 @@ export const hygieneChecks: Check[] = [
             passed: false,
             evidence: `Manifest present but no lockfile (expected one of: ${[...new Set(lockable.map((l) => l.file))].join(', ')}).`,
           };
+    },
+  },
+  {
+    id: 'HYG-08',
+    dimension: 'hygiene',
+    title: 'MCP config uses env interpolation for credentials',
+    points: 3,
+    remediation:
+      'Reference credential-shaped values in .cursor/mcp.json via ${ENV_VAR} interpolation instead of literals — this rewards deliberate, safe tool-access configuration, not just the absence of a leak.',
+    run(ctx) {
+      const mcpFiles = ctx.matching(MCP_RE);
+      if (mcpFiles.length === 0) {
+        return { passed: false, evidence: 'No .cursor/mcp.json in repository.' };
+      }
+      for (const file of mcpFiles) {
+        const content = ctx.read(file) ?? '';
+        if (findSecret(content)) {
+          return { passed: false, evidence: `${file} contains a literal credential signature (see HYG-04).` };
+        }
+        const parsed = safeJsonParse(content);
+        if (parsed === undefined) {
+          return { passed: false, evidence: `${file} is not valid JSON.` };
+        }
+        const credentialValues = credentialShapedValues(parsed);
+        const uninterpolated = credentialValues.filter((v) => !ENV_INTERPOLATION_RE.test(v));
+        if (uninterpolated.length > 0) {
+          return {
+            passed: false,
+            evidence: `${file} has credential-shaped field(s) not using \${VAR} interpolation.`,
+          };
+        }
+      }
+      return {
+        passed: true,
+        evidence: `${mcpFiles.join(', ')}: valid, and any credential-shaped fields use \${VAR} interpolation.`,
+      };
     },
   },
 ];

@@ -117,7 +117,7 @@
 }
 
 .hs-landing__terminal-pre code {
-  font-family: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace;
+  font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
   font-size: 0.78rem;
   line-height: 1.45;
   color: #d8ebe3;
@@ -163,7 +163,9 @@
   border-radius: 10px;
   background: var(--vp-c-bg);
   text-decoration: none !important;
-  transition: border-color 0.15s ease, transform 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .hs-landing__install-card:hover {

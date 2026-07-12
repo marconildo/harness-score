@@ -7,13 +7,13 @@ npx harness-score
 ```
 
 The scanner walks your repository (filesystem only — no LLM, no network, no
-telemetry), runs 33 deterministic checks, and reports a maturity level with
+telemetry), runs 36 deterministic checks, and reports a maturity level with
 the exact gaps to the next one:
 
 ```
-  harness-score v0.1.2  /work/my-app
+  harness-score v0.3.0  /work/my-app
 
-  Maturity: L2 · Guided   Score: 61/100 (61%)
+  Maturity: L2 · Guided   Score: 66/108 (61%)
 
   Context & Guides     ████████████████░░░░  80%
   Skills & Commands    █████████████░░░░░░░  67%
@@ -43,7 +43,33 @@ harness-score --json              # full report as JSON
 harness-score --md report.md      # markdown report (use "-" for stdout)
 harness-score --badge badge.svg   # SVG pill: harness + detected level (L0–L4)
 harness-score --min-level 3       # exit 1 if below L3 — the CI gate
+harness-score --diff base.json    # compare against a previous --json report
 ```
+
+### Tracking score over time {#diff-mode}
+
+`--diff <file>` compares the current scan against a baseline report saved
+from an earlier `--json` run — the level and score deltas, per-dimension
+movement, and exactly which checks flipped:
+
+```bash
+harness-score --json > baseline.json   # save today's report
+# ...later, after changes...
+harness-score --diff baseline.json     # see what moved
+```
+
+```
+  Compared to baseline:
+    Level: L2 · Guided → L3 · Sensing (+1)
+    Score: 61/108 (56%) → 84/108 (78%) (+22pp)
+    Sensors & Feedback   20% → 90% (+70pp)
+    Newly passing: SNS-01, SNS-02, SNS-04, CI-01, CI-02
+```
+
+`--diff` works with `--json` (adds `current`/`baseline`/`diff` to the
+payload) and `--md` (adds a "Compared to baseline" section) too — this is
+what the GitHub Action uses to post "harness score moved from L2 to L3"
+comments on pull requests.
 
 ## The Cursor plugin
 
@@ -395,7 +421,7 @@ a fallback for agents.
 The deprecated single-file format is absent.
 **Fix:** migrate `.cursorrules` content into scoped `.cursor/rules/*.mdc`.
 
-### Skills & Commands (12 pts)
+### Skills & Commands (17 pts)
 
 #### SKL-01 · At least one skill — 4 pts {#skl-01}
 A `SKILL.md` under `.cursor/skills/<name>/` (or `.agents/skills/`).
@@ -416,6 +442,18 @@ as command files.
 Descriptions ≥40 characters.
 **Fix:** write descriptions as trigger conditions — "Use when the user asks
 to deploy or release; covers tagging, pipeline, rollback, smoke tests."
+
+#### AGT-01 · Custom subagent defined — 3 pts {#agt-01}
+A markdown file under `.cursor/agents/`.
+**Fix:** package a purpose-built subagent for a job the primary agent should
+delegate (planning, review, release) — see
+[Subagents](/guide/cursor-harness-surface#subagents-purpose-built-delegates)
+in chapter 2.
+
+#### AGT-02 · Subagents declare name and description — 2 pts {#agt-02}
+Frontmatter with `name:` and `description:` on every subagent definition.
+**Fix:** the parent agent decides whether to delegate from these two fields
+alone; without them the subagent is never invoked.
 
 ### Hooks & Guardrails (14 pts)
 
@@ -489,7 +527,7 @@ husky/lint-staged, `pre-commit`, or lefthook.
 **Fix:** the earliest feedback a commit can get; catches what on-edit hooks
 missed before it enters history.
 
-### Hygiene & Safety (20 pts)
+### Hygiene & Safety (23 pts)
 
 #### HYG-01 · .gitignore present — 2 pts {#hyg-01}
 **Fix:** agents commit what they see; make build output and local state
@@ -523,6 +561,14 @@ there is exfiltrated by design.
 package-lock.json, uv.lock, Cargo.lock, go.sum, or equivalent.
 **Fix:** reproducible installs mean your sensors test the same dependency
 tree everywhere.
+
+#### HYG-08 · MCP config uses env interpolation for credentials — 3 pts {#hyg-08}
+`.cursor/mcp.json` is valid, and any credential-shaped field (token, key,
+secret, password…) uses `${ENV_VAR}` interpolation rather than a literal.
+The positive complement to HYG-04 — a repo with no MCP setup earns nothing
+here, same as any other bonus check.
+**Fix:** reference secrets as `"${VAR_NAME}"` and document required
+variables in `.env.example`.
 
 ## A worked improvement plan
 

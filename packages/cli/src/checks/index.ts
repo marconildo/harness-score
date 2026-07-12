@@ -1,4 +1,5 @@
 import type { Check } from '../types.js';
+import { agentChecks } from './agents.js';
 import { ciChecks } from './ci.js';
 import { contextChecks } from './context.js';
 import { hookChecks } from './hooks.js';
@@ -9,6 +10,7 @@ import { skillChecks } from './skills.js';
 export const ALL_CHECKS: Check[] = [
   ...contextChecks,
   ...skillChecks,
+  ...agentChecks,
   ...hookChecks,
   ...sensorChecks,
   ...ciChecks,

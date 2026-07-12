@@ -113,10 +113,16 @@ export function findSecret(content: string): string | null {
   return null;
 }
 
-export function safeJsonParse(content: string): unknown | null {
+/**
+ * Returns `undefined` only when `content` fails to parse as JSON — a valid
+ * but falsy JSON value (`null`, `false`, `0`, `""`) is returned as-is, since
+ * JSON itself can never produce `undefined`. Callers must check
+ * `=== undefined` for "did not parse", not a truthiness check.
+ */
+export function safeJsonParse(content: string): unknown | undefined {
   try {
     return JSON.parse(content);
   } catch {
-    return null;
+    return undefined;
   }
 }

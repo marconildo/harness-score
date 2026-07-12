@@ -28,6 +28,48 @@ branch, then reference it from your README:
 <img alt="Harness Score" src="https://raw.githubusercontent.com/<you>/<repo>/badges/harness-badge.svg" height="20">
 ```
 
+## Pull-request comments
+
+Set `comment: 'true'` on a `pull_request` workflow to get a sticky comment
+showing the score delta against the PR's base branch — "harness score moved
+from L2 to L3 in this PR" instead of just a snapshot. It updates the same
+comment on every push (matched via a hidden marker), rather than posting a
+new one each time.
+
+This is opt-in and requires the calling workflow to grant
+`pull-requests: write` — the action cannot request that permission for you:
+
+```yaml
+on:
+  pull_request:
+
+permissions:
+  pull-requests: write
+
+jobs:
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: paladini/harness-score/action@main
+        with:
+          comment: 'true'
+```
+
+Under the hood this scans the PR head (the normal step above), then scans
+the base branch's tip commit into a temporary `git worktree` and diffs the
+two with `harness-score --diff` — no extra checkout step needed, and no
+history is written back to your repository.
+
+Two pushes in quick succession can race and post two comments instead of
+updating one. If that matters for your repo, add a concurrency group scoped
+to the PR:
+
+```yaml
+concurrency:
+  group: harness-score-${{ github.event.pull_request.number }}
+```
+
 ## Inputs
 
 | Input | Default | Description |
@@ -37,6 +79,7 @@ branch, then reference it from your README:
 | `report` | _(empty)_ | Markdown report output path |
 | `working-directory` | `.` | Directory to scan |
 | `version` | `latest` | harness-score npm version |
+| `comment` | `false` | Post/update a sticky PR comment with the score delta (`pull_request` events only; requires `pull-requests: write`) |
 
 ## Outputs
 

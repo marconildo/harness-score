@@ -28,7 +28,7 @@ wildly different results, because one has a harness that catches mistakes
 before they ship and the other has none.
 
 **Harness Score measures that harness.** Point it at any repository and get a
-maturity level (L0–L4), a 100-point breakdown across six dimensions, and the
+maturity level (L0–L4), a 108-point breakdown across six dimensions, and the
 precise, ranked list of what to fix next — with zero LLM calls, zero network
 access, and the same result every time you run it.
 
@@ -37,16 +37,16 @@ npx harness-score
 ```
 
 ```
-  harness-score v0.1.2  ~/my-app
+  harness-score v0.3.0  ~/my-app
 
-  Maturity: L2 · Guided   Score: 61/100 (61%)
+  Maturity: L2 · Guided   Score: 70/108 (65%)
 
   Context & Guides     ████████████████░░░░  80%  16/20 pts
-  Skills & Commands    █████████████░░░░░░░  67%   8/12 pts
+  Skills & Commands    █████████████░░░░░░░  65%  11/17 pts
   Hooks & Guardrails   ░░░░░░░░░░░░░░░░░░░░   0%   0/14 pts
   Sensors & Feedback   ████████████████░░░░  80%  16/20 pts
   CI Feedback          ██████████████░░░░░░  71%  10/14 pts
-  Hygiene & Safety     ███████████████░░░░░  75%  15/20 pts
+  Hygiene & Safety     ███████████████░░░░░  74%  17/23 pts
 
   To reach L3: sensors ≥ 60%; ci ≥ 50%
 ```
@@ -95,17 +95,17 @@ guess. Full rubric, thresholds, and rationale:
 
 ## The six dimensions
 
-100 points, six dimensions, 33 checks — each one naming a concrete artifact,
+108 points, six dimensions, 36 checks — each one naming a concrete artifact,
 never "write better rules."
 
 | Dimension | Points | What it measures |
 |---|---|---|
 | 📖 Context & Guides | 20 | `AGENTS.md` substance, `.cursor/rules/` scoping and frontmatter |
-| 🧩 Skills & Commands | 12 | Packaged procedures — skills, slash commands, trigger-worthy descriptions |
+| 🧩 Skills & Commands | 17 | Packaged procedures — skills, slash commands, subagents, trigger-worthy descriptions |
 | 🪝 Hooks & Guardrails | 14 | Gate hooks (block risky actions) and feedback hooks (lint/format on edit) |
 | ✅ Sensors & Feedback | 20 | Test runner, linter, type checker, formatter, actual test files |
 | ⚙️ CI Feedback | 14 | Pipeline runs tests/lint/types on every push, pre-commit installed |
-| 🔒 Hygiene & Safety | 20 | `.gitignore`, no leaked `.env`/secrets, license, lockfile committed |
+| 🔒 Hygiene & Safety | 23 | `.gitignore`, no leaked `.env`/secrets, license, lockfile, safe MCP config |
 
 Full check catalog, with every remediation recipe:
 **[Measure & Improve](https://paladini.github.io/harness-score/guide/measure-and-improve#the-check-catalog)**.
@@ -128,7 +128,7 @@ deterministic scanner can claim.
 | Piece | What | Where |
 |---|---|---|
 | 📖 **The Guide** | Harness engineering applied to Cursor: guides (feedforward), sensors (feedback), guardrails, and the 5-level maturity model. Consolidates Martin Fowler's harness engineering articles, LangChain's harness lessons, and Cursor's own docs. | [paladini.github.io/harness-score](https://paladini.github.io/harness-score/) |
-| 🔍 **The CLI** | `npx harness-score` — 33 checks across 6 dimensions, maturity level L0–L4, JSON/markdown/badge output, `--min-level` CI gate. Zero runtime dependencies. | [packages/cli](packages/cli) |
+| 🔍 **The CLI** | `npx harness-score` — 36 checks across 6 dimensions, maturity level L0–L4, JSON/markdown/badge output, `--diff` mode, `--min-level` CI gate. Zero runtime dependencies. | [packages/cli](packages/cli) |
 | 🧩 **The Cursor plugin** | `/harness-audit` command + `harness-engineering` skill: audit the open workspace and let the agent fix the gaps following the guide's recipes. | [plugin](plugin) |
 | ⚙️ **The GitHub Action** | Run the scan on every push, gate on a minimum level, emit the badge. | [action](action) |
 

@@ -20,7 +20,7 @@ describe('maturity levels on fixture repositories', () => {
   test('report shape is stable', () => {
     const report = score(path.join(FIXTURES, 'level-4'));
     expect(report.tool.name).toBe('harness-score');
-    expect(report.score.max).toBe(100);
+    expect(report.score.max).toBe(108);
     expect(report.truncated).toBe(false);
     expect(report.dimensions).toHaveLength(6);
     for (const check of report.checks) {

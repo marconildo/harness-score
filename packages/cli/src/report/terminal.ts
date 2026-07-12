@@ -1,3 +1,4 @@
+import type { ReportDiff } from '../diff.js';
 import type { Report } from '../types.js';
 
 const useColor = process.stdout.isTTY === true && process.env.NO_COLOR === undefined;
@@ -17,7 +18,49 @@ function bar(percent: number, width = 20): string {
   return '█'.repeat(filled) + '░'.repeat(width - filled);
 }
 
-export function renderTerminal(report: Report): string {
+function signed(n: number): string {
+  return n > 0 ? `+${n}` : `${n}`;
+}
+
+function renderDiffSection(diff: ReportDiff): string[] {
+  const lines: string[] = [];
+  lines.push(bold('  Compared to baseline:'));
+  if (diff.rubricChanged) {
+    lines.push(
+      yellow(
+        '  ⚠ Baseline is from a different tool version/rubric total — some deltas below may reflect that, not repository changes.',
+      ),
+    );
+  }
+  lines.push(
+    `    Level: L${diff.level.before} · ${diff.level.beforeName} → ` +
+      `L${diff.level.after} · ${diff.level.afterName} (${signed(diff.level.delta)})`,
+  );
+  lines.push(
+    `    Score: ${diff.score.before.earned}/${diff.score.before.max} (${diff.score.before.percent}%) → ` +
+      `${diff.score.after.earned}/${diff.score.after.max} (${diff.score.after.percent}%) ` +
+      `(${signed(diff.score.deltaPercent)}pp)`,
+  );
+  for (const d of diff.dimensions) {
+    if (d.delta === 0) continue;
+    lines.push(`    ${d.title.padEnd(20)} ${d.before}% → ${d.after}% (${signed(d.delta)}pp)`);
+  }
+  const gained = diff.checksChanged.filter((c) => c.change === 'newly-passing');
+  const lost = diff.checksChanged.filter((c) => c.change === 'newly-failing');
+  if (gained.length > 0) {
+    lines.push(`    ${green('Newly passing:')} ${gained.map((c) => c.id).join(', ')}`);
+  }
+  if (lost.length > 0) {
+    lines.push(`    ${red('Newly failing:')} ${lost.map((c) => c.id).join(', ')}`);
+  }
+  if (gained.length === 0 && lost.length === 0 && diff.dimensions.every((d) => d.delta === 0)) {
+    lines.push(dim('    No change.'));
+  }
+  lines.push('');
+  return lines;
+}
+
+export function renderTerminal(report: Report, diff?: ReportDiff | null): string {
   const lines: string[] = [];
   const levelPaint = LEVEL_COLOR[report.level.index] ?? red;
   lines.push('');
@@ -34,6 +77,9 @@ export function renderTerminal(report: Report): string {
       `   ${bold('Score:')} ${report.score.earned}/${report.score.max} (${report.score.percent}%)`,
   );
   lines.push('');
+  if (diff) {
+    lines.push(...renderDiffSection(diff));
+  }
   for (const dimension of report.dimensions) {
     const pct = `${dimension.percent}%`.padStart(4);
     lines.push(

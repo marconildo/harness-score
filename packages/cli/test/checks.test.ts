@@ -127,6 +127,92 @@ describe('hygiene checks', () => {
     });
     expect((await check('HYG-04')).run(ctx).passed).toBe(true);
   });
+
+  test('HYG-08 fails when there is no mcp.json', async () => {
+    const ctx = fakeContext({});
+    expect((await check('HYG-08')).run(ctx).passed).toBe(false);
+  });
+
+  test('HYG-08 fails on a literal credential-shaped value', async () => {
+    const ctx = fakeContext({
+      '.cursor/mcp.json': JSON.stringify({
+        mcpServers: { svc: { env: { API_TOKEN: 'literal-value-not-interpolated' } } },
+      }),
+    });
+    expect((await check('HYG-08')).run(ctx).passed).toBe(false);
+  });
+
+  test('HYG-08 passes when credential-shaped values use ${VAR} interpolation', async () => {
+    const ctx = fakeContext({
+      '.cursor/mcp.json': JSON.stringify({
+        mcpServers: { svc: { env: { API_TOKEN: '${SVC_API_TOKEN}' } } },
+      }),
+    });
+    expect((await check('HYG-08')).run(ctx).passed).toBe(true);
+  });
+
+  test('HYG-08 passes when mcp.json has no credential-shaped fields at all', async () => {
+    const ctx = fakeContext({
+      '.cursor/mcp.json': JSON.stringify({
+        mcpServers: { svc: { command: 'npx', args: ['-y', '@example/mcp-server'] } },
+      }),
+    });
+    expect((await check('HYG-08')).run(ctx).passed).toBe(true);
+  });
+
+  test('HYG-08 fails on a literal secret hidden inside an array under a credential-shaped key', async () => {
+    const ctx = fakeContext({
+      '.cursor/mcp.json': JSON.stringify({
+        mcpServers: { svc: { env: { apiKeys: ['literal-one', 'literal-two'] } } },
+      }),
+    });
+    expect((await check('HYG-08')).run(ctx).passed).toBe(false);
+  });
+
+  test('HYG-08 fails on a numeric/boolean credential-shaped value', async () => {
+    const ctx = fakeContext({
+      '.cursor/mcp.json': JSON.stringify({
+        mcpServers: { svc: { env: { password: 123456 } } },
+      }),
+    });
+    expect((await check('HYG-08')).run(ctx).passed).toBe(false);
+  });
+
+  test('HYG-08 does not flag benign fields that merely contain "key"/"auth" as substrings', async () => {
+    const ctx = fakeContext({
+      '.cursor/mcp.json': JSON.stringify({
+        mcpServers: { svc: { authorName: 'Jane Doe', keyword: 'search', command: 'npx' } },
+      }),
+    });
+    expect((await check('HYG-08')).run(ctx).passed).toBe(true);
+  });
+
+  test('HYG-08 reports invalid JSON only for content that actually fails to parse', async () => {
+    const invalid = fakeContext({ '.cursor/mcp.json': '{ not json' });
+    const outcome = (await check('HYG-08')).run(invalid);
+    expect(outcome.passed).toBe(false);
+    expect(outcome.evidence).toContain('not valid JSON');
+  });
+});
+
+describe('agent checks', () => {
+  test('AGT-01 fails when no subagents are defined', async () => {
+    const ctx = fakeContext({});
+    expect((await check('AGT-01')).run(ctx).passed).toBe(false);
+  });
+
+  test('AGT-02 rejects a subagent missing frontmatter', async () => {
+    const ctx = fakeContext({ '.cursor/agents/reviewer.md': '# Reviewer\nNo frontmatter here.' });
+    expect((await check('AGT-02')).run(ctx).passed).toBe(false);
+  });
+
+  test('AGT-02 passes a subagent with name and description', async () => {
+    const ctx = fakeContext({
+      '.cursor/agents/reviewer.md':
+        '---\nname: reviewer\ndescription: Use when reviewing a diff.\n---\n\nBody.',
+    });
+    expect((await check('AGT-02')).run(ctx).passed).toBe(true);
+  });
 });
 
 describe('sensor checks', () => {

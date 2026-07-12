@@ -29,6 +29,13 @@ inputs:
     description: 'harness-score npm version to run.'
     required: false
     default: 'latest'
+  comment:
+    description: >-
+      Post (or update) a sticky pull-request comment showing the harness
+      score and, on pull_request events, its delta against the base branch.
+      Opt-in: the calling workflow must grant `pull-requests: write`.
+    required: false
+    default: 'false'
 
 outputs:
   level:
@@ -72,3 +79,85 @@ runs:
           node -p "JSON.parse(require('fs').readFileSync('harness-report.json','utf8')).level.nextLevelGaps.join('; ')"
           exit 1
         fi
+
+    - id: baseline
+      if: ${{ inputs.comment == 'true' && github.event_name == 'pull_request' }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        set -euo pipefail
+        git fetch origin "${{ github.event.pull_request.base.ref }}"
+        git worktree remove /tmp/harness-score-base --force 2>/dev/null || true
+        git worktree add /tmp/harness-score-base FETCH_HEAD
+        npx -y "harness-score@${{ inputs.version }}" "/tmp/harness-score-base/${{ inputs.working-directory }}" \
+          --quiet --json > /tmp/harness-score-base.json
+        git worktree remove /tmp/harness-score-base --force
+
+    - id: diff
+      if: ${{ inputs.comment == 'true' && github.event_name == 'pull_request' }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        set -euo pipefail
+        npx -y "harness-score@${{ inputs.version }}" . --quiet --json \
+          --diff /tmp/harness-score-base.json > /tmp/harness-score-diff.json
+
+    - id: comment
+      if: ${{ inputs.comment == 'true' && github.event_name == 'pull_request' }}
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const { diff } = JSON.parse(fs.readFileSync('/tmp/harness-score-diff.json', 'utf8'));
+          const marker = '<!-- harness-score-report -->';
+          const arrow = diff.level.delta > 0 ? '⬆️' : diff.level.delta < 0 ? '⬇️' : '➡️';
+          const sign = (n) => (n > 0 ? `+${n}` : `${n}`);
+
+          const rubricWarning = diff.rubricChanged
+            ? '> ⚠ Baseline is from a different tool version/rubric total — some deltas below may reflect that, not repository changes.\n\n'
+            : '';
+
+          const movedDims = diff.dimensions.filter((d) => d.delta !== 0);
+          const dimTable = movedDims.length
+            ? [
+                '| Dimension | Before | After | Δ |',
+                '|---|---|---|---|',
+                ...movedDims.map((d) => `| ${d.title} | ${d.before}% | ${d.after}% | ${sign(d.delta)}pp |`),
+              ].join('\n')
+            : '_No dimension moved._';
+
+          const gained = diff.checksChanged.filter((c) => c.change === 'newly-passing').map((c) => c.id);
+          const lost = diff.checksChanged.filter((c) => c.change === 'newly-failing').map((c) => c.id);
+
+          const body = [
+            marker,
+            `### ${arrow} Harness Score: L${diff.level.before} · ${diff.level.beforeName} → L${diff.level.after} · ${diff.level.afterName}`,
+            '',
+            rubricWarning + `**Score:** ${diff.score.before.earned}/${diff.score.before.max} (${diff.score.before.percent}%) → ` +
+              `${diff.score.after.earned}/${diff.score.after.max} (${diff.score.after.percent}%) (${sign(diff.score.deltaPercent)}pp)`,
+            '',
+            dimTable,
+            '',
+            gained.length ? `**Newly passing:** ${gained.join(', ')}` : '',
+            lost.length ? `**Newly failing:** ${lost.join(', ')}` : '',
+            '',
+            '[Harness Score guide](https://paladini.github.io/harness-score/)',
+          ]
+            .filter((line) => line !== '')
+            .join('\n');
+
+          const { owner, repo } = context.repo;
+          const issue_number = context.issue.number;
+          const comments = await github.paginate(github.rest.issues.listComments, {
+            owner,
+            repo,
+            issue_number,
+            per_page: 100,
+          });
+          const existing = comments.find((c) => c.body && c.body.includes(marker));
+
+          if (existing) {
+            await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+          } else {
+            await github.rest.issues.createComment({ owner, repo, issue_number, body });
+          }

@@ -76,14 +76,14 @@ const installs = [
           <h3>Scan</h3>
           <p>
             Run <code>npx harness-score</code> in your repo. The CLI reads your
-            filesystem — 33 checks, zero LLM calls, zero network.
+            filesystem — 36 checks, zero LLM calls, zero network.
           </p>
         </article>
         <article class="hs-landing__step">
           <span class="hs-landing__step-num">2</span>
           <h3>Level</h3>
           <p>
-            Get a maturity level <strong>L0–L4</strong>, a 100-point breakdown across six
+            Get a maturity level <strong>L0–L4</strong>, a 108-point breakdown across six
             dimensions, and the exact gap blocking the next level.
           </p>
         </article>
@@ -110,16 +110,16 @@ const installs = [
           Run the scanner →
         </a>
       </div>
-      <pre class="hs-landing__terminal-pre" aria-label="Example harness-score output"><code>  harness-score v0.1.2  ~/my-app
+      <pre class="hs-landing__terminal-pre" aria-label="Example harness-score output"><code>  harness-score v0.3.0  ~/my-app
 
-  Maturity: L2 · Guided   Score: 61/100 (61%)
+  Maturity: L2 · Guided   Score: 70/108 (65%)
 
   Context & Guides     ████████████████░░░░  80%
-  Skills & Commands    █████████████░░░░░░░  67%
+  Skills & Commands    █████████████░░░░░░░  65%
   Hooks & Guardrails   ░░░░░░░░░░░░░░░░░░░░   0%
   Sensors & Feedback   ████████████████░░░░  80%
   CI Feedback          ██████████████░░░░░░  71%
-  Hygiene & Safety     ███████████████░░░░░  75%
+  Hygiene & Safety     ███████████████░░░░░  74%
 
   To reach L3: sensors ≥ 60%; ci ≥ 50%</code></pre>
     </section>

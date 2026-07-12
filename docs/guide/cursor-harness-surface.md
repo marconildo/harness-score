@@ -131,6 +131,40 @@ trackers, docs, browsers. From a harness perspective MCP is a guide (it
 determines what the agent can *see and do*) and a risk surface (servers run
 with your credentials — never inline secrets; use `${ENV_VAR}` interpolation).
 
+## Subagents — purpose-built delegates {#subagents-purpose-built-delegates}
+
+A subagent is a markdown file under `.cursor/agents/` (or a plugin's
+`agents/` folder) with the same `name` + `description` frontmatter contract
+as a skill:
+
+```markdown
+---
+name: reviewer
+description: Use when asked to review a pull request or diff for conventions
+  in AGENTS.md and .cursor/rules; reports findings by severity without
+  editing code.
+---
+
+# Reviewer subagent
+
+Read the diff, AGENTS.md, and .cursor/rules/*.mdc. Report violations ordered
+by severity. Never modify code — that's the parent agent's job.
+```
+
+The distinction from a skill: a skill teaches the *primary* agent a
+procedure it runs inline; a subagent is a **separate delegate** the primary
+agent hands a task to — often with its own scoped tool access or a narrower
+job description, so a large task (a full repo audit, a multi-step release)
+can be split across specialized workers instead of one agent doing
+everything in one context. Cursor's own docs describe this as delegating
+"purpose-built" work — a planner, a reviewer, a release runner — each with a
+tight enough description that the primary agent can decide when to hand off
+without guessing.
+
+The same rule as skills applies to the description: it is the only signal
+the parent agent uses to decide whether to delegate, so write it as a
+trigger condition, not a label.
+
 ## Plugins — the harness, packaged
 
 A Cursor plugin bundles rules, skills, commands, hooks, agents, and MCP
@@ -150,6 +184,7 @@ audits the very artifacts this chapter described.
 | State a convention for part of the codebase | Rule with `globs` |
 | Teach a multi-step procedure | Skill |
 | Package a workflow humans trigger | Command |
+| Delegate a job to a separate, purpose-built worker | Subagent |
 | Enforce something regardless of what the model thinks | Hook |
 | Give the agent a tool or data source | MCP server |
 | Share all of the above across repos | Plugin |

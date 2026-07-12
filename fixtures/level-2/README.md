@@ -1,4 +1,5 @@
-# Sample App (Level 1 fixture)
+# Sample App (Level 2 fixture)
 
-A tiny app documented well enough for an agent to orient itself, but with no
-rules, skills, hooks, sensors, or CI yet.
+Builds on level 1 with a guided layer: `.cursor/rules/` scope conventions,
+a `deploy` skill, a `/review` command, a `.gitignore`, and a `LICENSE`. Still
+no sensors, hooks, or CI.

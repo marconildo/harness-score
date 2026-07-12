@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { findSecret, parseFrontmatter } from '../dist/util.js';
+import { findSecret, parseFrontmatter, safeJsonParse } from '../dist/util.js';
 
 describe('parseFrontmatter', () => {
   test('plain single-line values still work', () => {
@@ -77,5 +77,22 @@ describe('findSecret', () => {
 
   test('does not flag clean content', () => {
     expect(findSecret('just some normal documentation text')).toBeNull();
+  });
+});
+
+describe('safeJsonParse', () => {
+  test('returns undefined on invalid JSON', () => {
+    expect(safeJsonParse('{ not json')).toBeUndefined();
+  });
+
+  test('valid but falsy JSON round-trips as-is, not as a parse failure', () => {
+    expect(safeJsonParse('false')).toBe(false);
+    expect(safeJsonParse('null')).toBeNull();
+    expect(safeJsonParse('0')).toBe(0);
+    expect(safeJsonParse('""')).toBe('');
+  });
+
+  test('parses a normal object', () => {
+    expect(safeJsonParse('{"a":1}')).toEqual({ a: 1 });
   });
 });

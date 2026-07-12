@@ -6,7 +6,7 @@ deterministically, with zero LLM calls — and let the agent fix the gaps.
 ## What you get
 
 - **`/harness-audit`** — runs [`harness-score`](https://www.npmjs.com/package/harness-score)
-  (a pure filesystem scanner: 33 checks, 6 dimensions, 5 maturity levels)
+  (a pure filesystem scanner: 36 checks, 6 dimensions, 5 maturity levels)
   on your workspace and presents the report with the top remediations.
 - **`harness-engineering` skill** — when you ask to "improve my harness" or
   "fix the audit findings", the agent follows the guide's recipes to write

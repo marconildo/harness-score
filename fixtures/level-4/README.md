@@ -1,4 +1,7 @@
-# Sample App (Level 1 fixture)
+# Sample App (Level 4 fixture)
 
-A tiny app documented well enough for an agent to orient itself, but with no
-rules, skills, hooks, sensors, or CI yet.
+Builds on level 3 with the self-correcting layer: `.cursor/hooks.json`
+(a shell guardrail and a format-on-edit feedback hook), a
+`.pre-commit-config.yaml`, and a well-formed `.cursor/mcp.json` using
+`${VAR}` interpolation for its credential. Represents the full maturity
+ladder end to end.

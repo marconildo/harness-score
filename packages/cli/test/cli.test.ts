@@ -55,4 +55,42 @@ describe('cli', () => {
     expect(svg).toContain('L0');
     expect(svg.startsWith('<svg')).toBe(true);
   });
+
+  test('--diff compares against a baseline report and shows the level delta', () => {
+    const baselinePath = path.join(os.tmpdir(), `hs-baseline-${process.pid}.json`);
+    const baseline = run([path.join(FIXTURES, 'level-2'), '--json', '--quiet']);
+    fs.writeFileSync(baselinePath, baseline.stdout, 'utf8');
+
+    const result = run([path.join(FIXTURES, 'level-4'), '--diff', baselinePath]);
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('Compared to baseline');
+    expect(result.stdout).toContain('L2 · Guided → L4 · Self-correcting (+2)');
+
+    const jsonResult = run([path.join(FIXTURES, 'level-4'), '--diff', baselinePath, '--json', '--quiet']);
+    const payload = JSON.parse(jsonResult.stdout);
+    expect(payload.diff.level.delta).toBe(2);
+    expect(payload.current.level.index).toBe(4);
+    expect(payload.baseline.level.index).toBe(2);
+
+    fs.unlinkSync(baselinePath);
+  });
+
+  test('--diff fails clearly on an unreadable baseline path', () => {
+    const result = run([
+      path.join(FIXTURES, 'level-4'),
+      '--diff',
+      path.join(os.tmpdir(), 'does-not-exist.json'),
+    ]);
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain('--diff');
+  });
+
+  test('--diff fails clearly (not a crash) on a valid-JSON baseline that is not a Report', () => {
+    const badPath = path.join(os.tmpdir(), `hs-bad-baseline-${process.pid}.json`);
+    fs.writeFileSync(badPath, 'false', 'utf8');
+    const result = run([path.join(FIXTURES, 'level-4'), '--diff', badPath]);
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain('does not look like a harness-score report');
+    fs.unlinkSync(badPath);
+  });
 });

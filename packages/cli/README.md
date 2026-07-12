@@ -8,10 +8,10 @@ Cursor-first, zero LLM calls.**
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/paladini/harness-score/blob/main/LICENSE)
 
 `harness-score` measures how well a repository is set up for reliable
-AI-assisted development: `AGENTS.md`, Cursor rules/skills/commands, hooks,
-tests/linters/types, CI, and secret hygiene. It scores 33 checks across 6
-dimensions and reports a maturity level from **L0 (Unharnessed)** to
-**L4 (Self-correcting)**.
+AI-assisted development: `AGENTS.md`, Cursor rules/skills/commands/subagents,
+hooks, tests/linters/types, CI, and secret hygiene. It scores 36 checks
+across 6 dimensions and reports a maturity level from **L0 (Unharnessed)**
+to **L4 (Self-correcting)**.
 
 The scan reads your filesystem and parses config — that's it. No network
 calls, no telemetry, no model in the loop. Same repo in, same score out,

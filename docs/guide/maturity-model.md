@@ -17,16 +17,16 @@ Design goals:
 
 ## The six dimensions
 
-100 points across six dimensions:
+108 points across six dimensions:
 
 | Dimension | Points | What it measures |
 |---|---|---|
 | Context & Guides | 20 | AGENTS.md, rules quality and scoping |
-| Skills & Commands | 12 | Procedural knowledge, explicit workflows |
+| Skills & Commands | 17 | Procedural knowledge, explicit workflows, subagents |
 | Hooks & Guardrails | 14 | Runtime-enforced gates and feedback |
 | Sensors & Feedback | 20 | Tests, linter, types, formatter |
 | CI Feedback | 14 | Pipeline checks, pre-commit |
-| Hygiene & Safety | 20 | Secrets, env files, lockfile, license |
+| Hygiene & Safety | 23 | Secrets, env files, lockfile, license, MCP config |
 
 Each dimension is the sum of individual checks (full catalog with
 remediations in [chapter 7](/guide/measure-and-improve#the-check-catalog)).
@@ -53,10 +53,10 @@ step from zero — feedforward for every future session in one file.
 **Requires: Context ≥ 60% · (Skills ≥ 30% or Hooks ≥ 30%) · Hygiene ≥ 50%.**
 
 Guidance has structure: scoped `.cursor/rules/` with valid frontmatter, and
-at least the beginnings of procedural knowledge (a skill or command) or hook
-machinery. Basic hygiene holds — env files ignored, no credential
-signatures in harness files. The harness now ships with the code and is
-reviewed like code.
+at least the beginnings of procedural knowledge (a skill, command, or
+subagent) or hook machinery. Basic hygiene holds — env files ignored, no
+credential signatures in harness files. The harness now ships with the code
+and is reviewed like code.
 
 ### L3 · Sensing
 
