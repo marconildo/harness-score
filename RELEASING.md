@@ -12,9 +12,24 @@ no npm token, no long-lived secret stored anywhere in this repo.
    - If plugin content changed: `plugin/.cursor-plugin/plugin.json` +
      an entry in `plugin/CHANGELOG.md` (the plugin has its own release
      track and version number).
+
+   Preferred way to do this: contributors add a changeset
+   (`npm run changeset`) describing their change and its bump type
+   (patch/minor/major) in the same PR; at release time, run
+   `npm run version-packages` — this runs `changeset version` (bumps
+   `packages/cli/package.json` and writes `packages/cli/CHANGELOG.md` from
+   the accumulated changesets) followed by `scripts/sync-version.mjs`,
+   which mirrors the new version into `TOOL_VERSION` and `jsr.json` (changesets
+   has no notion of either file, so this closes that gap). Review the diff,
+   then continue at step 3. If no changesets were added for a release,
+   bump all three by hand as before.
 3. Commit `release: vX.Y.Z`, tag `vX.Y.Z`, push with tags.
-4. Create a GitHub Release from that tag:
+4. Create a GitHub Release from that tag. If `packages/cli/CHANGELOG.md`
+   gained an entry for this version (via changesets), copy that section
+   into the release notes instead of relying on bare auto-generated notes:
    ```bash
+   gh release create vX.Y.Z --notes-file path/to/notes.md
+   # or, with no CHANGELOG.md entry for this release:
    gh release create vX.Y.Z --generate-notes
    ```
    This fires [`release.yml`](.github/workflows/release.yml), which
@@ -30,7 +45,15 @@ no npm token, no long-lived secret stored anywhere in this repo.
      "Workflow permissions" to be set to *Read and write*.
    - **JSR** as `@paladini/harness-score`, via OIDC — no token at all. The
      scope must be claimed once at [jsr.io/new](https://jsr.io/new) before
-     the first publish succeeds.
+     the first publish succeeds. **Deliberately publishes raw `src/**/*.ts`**
+     (see `packages/cli/jsr.json`), not the `dist/` bundle npm/GitHub
+     Packages ship — JSR consumes and type-checks TypeScript natively, so
+     shipping source there avoids a build step and gives JSR consumers the
+     original (non-minified) code with inline JSDoc. This means the three
+     registries are not byte-for-byte identical artifacts of the same
+     release; all three still expose the same public API (checked by
+     `packages/cli/test/golden-output.test.ts` and the `attw`/type-smoke
+     checks against the npm-published shape).
 5. If npm Trusted Publishing isn't configured yet, `npm publish` in CI fails
    with a clear error; complete the one-time npmjs.com setup and re-run —
    no manual local publish is ever needed once it's wired up.

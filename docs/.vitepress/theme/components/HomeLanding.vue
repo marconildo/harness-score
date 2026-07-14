@@ -21,7 +21,7 @@ const installs = [
   {
     title: 'npm',
     cmd: 'npm i -g harness-score',
-    note: 'v0.1.2 on npmjs.org',
+    note: 'v0.3.0 on npmjs.org',
     href: 'https://www.npmjs.com/package/harness-score',
     external: true,
     primary: false,
@@ -29,8 +29,8 @@ const installs = [
   {
     title: 'Cursor plugin',
     cmd: '/harness-audit',
-    note: 'Audit + fix gaps in the editor',
-    href: 'https://cursor.com/marketplace',
+    note: 'In repo — Marketplace listing not live yet',
+    href: 'https://github.com/paladini/harness-score/tree/main/plugin',
     external: true,
     primary: false,
   },
@@ -215,7 +215,12 @@ const installs = [
           <h3>CLI</h3>
           <p><code>harness-score</code> — JSON, markdown, badge output. Zero runtime deps.</p>
         </a>
-        <a class="hs-landing__product" href="https://cursor.com/marketplace" target="_blank" rel="noreferrer">
+        <a
+          class="hs-landing__product"
+          href="https://github.com/paladini/harness-score/tree/main/plugin"
+          target="_blank"
+          rel="noreferrer"
+        >
           <h3>Cursor plugin</h3>
           <p><code>/harness-audit</code> command + skill to fix every gap the scan finds.</p>
         </a>
