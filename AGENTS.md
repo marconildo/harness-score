@@ -13,7 +13,7 @@ dogfoods its own scanner: it must always score **L4** (`npm run scan`).
 
 - `packages/cli/` — the scanner. TypeScript, ESM, **zero runtime deps**.
   - `src/checks/` — one file per dimension (see `.cursor/rules/checks.mdc`)
-  - `src/score.ts` — the maturity rubric (levels L0–L4)
+  - `src/score.ts` — the maturity model (levels L0–L4)
 - `docs/` — the VitePress guide. `docs/guide/measure-and-improve.md` holds
   the check catalog with one `{#<check-id>}` anchor per check.
 - `plugins/` — one directory per tool (`cursor/`, `claude-code/`, …), plus
@@ -42,11 +42,11 @@ dogfoods its own scanner: it must always score **L4** (`npm run scan`).
   no `Date.now()`-dependent output. Filesystem reads and parsing only.
 - `packages/cli` keeps **zero runtime dependencies** (fast `npx`, no supply
   chain surface). Dev dependencies are fine.
-- The rubric lives in three places that must change together:
+- The maturity model lives in three places that must change together:
   `src/score.ts` (implementation), `docs/guide/maturity-model.md` (levels
   + dimension point totals), `docs/guide/measure-and-improve.md` (check
   catalog). `packages/cli/test/docs.test.ts` and
-  `packages/cli/test/rubric-sync.test.ts` enforce that check IDs, points,
+  `packages/cli/test/maturity-sync.test.ts` enforce that check IDs, points,
   dimension totals, and level thresholds all stay in sync across every one
   of those three files — not just anchors in the check catalog.
 - Check IDs (`CTX-01`, …) are public API: never renumber or reuse them.

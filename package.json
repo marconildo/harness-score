@@ -13,7 +13,8 @@
     "test:coverage": "npm run test:coverage -w harness-score",
     "scan": "node packages/cli/dist/cli.js .",
     "plugins:sync": "node plugins/shared/generate-tools.mjs",
-    "plugins:sync-check": "npm run build && node plugins/shared/generate-tools.mjs --check",
+    "plugins:generate": "node plugins/shared/generate.mjs",
+    "plugins:sync-check": "npm run build && node plugins/shared/generate-tools.mjs --check && node plugins/shared/generate.mjs --check",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
@@ -21,8 +22,6 @@
     "format": "biome check --write .",
     "changeset": "changeset",
     "version-packages": "changeset version && node scripts/sync-version.mjs",
-    "plugins:generate": "node plugins/shared/generate.mjs",
-    "plugins:sync-check": "node plugins/shared/generate.mjs --check",
     "prepare": "husky"
   },
   "devDependencies": {
