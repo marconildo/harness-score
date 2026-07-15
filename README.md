@@ -38,7 +38,7 @@ npx harness-score
 ```
 
 ```
-  harness-score v0.6.0  ~/my-app
+  harness-score v1.0.0  ~/my-app
 
   Maturity: L2 · Guided   Score: 70/108 (65%)
   Detected: Cursor, Claude Code
@@ -124,6 +124,26 @@ Honesty about the limits of a deterministic scanner:
 A high score means the *infrastructure* for reliable agent work exists. It's
 necessary, not sufficient — and that's the honest ceiling of what any
 deterministic scanner can claim.
+
+## Stability & versioning
+
+As of **v1.0.0**, Harness Score follows [semantic versioning](https://semver.org/)
+with a concrete definition of what counts as public API:
+
+- **Check IDs** (`CTX-01` … `HYG-08`) are stable identifiers. A check's ID
+  never changes meaning; removing or repurposing one is a **major** change.
+- **The `Report` JSON shape** — everything `--json` emits and the typed
+  programmatic API exports — only gains fields in **minor** versions;
+  removing or renaming a field is **major**.
+- **CLI flags and exit codes** (`0` pass, `1` gate failure, `2` usage error)
+  are stable; removals are **major**.
+- **Maturity model evolution** (new checks, point totals, level thresholds)
+  ships in **minor** versions — it changes what a repository *scores*, not
+  how you *consume* the tool. `--diff` flags it explicitly via
+  `maturityModelChanged`, so baselines are never silently misread.
+- **The determinism invariants** — zero LLM calls, zero network access, zero
+  runtime dependencies, same input ⇒ same output — are permanent commitments,
+  not version-scoped promises.
 
 ## The pieces
 
@@ -289,10 +309,11 @@ instead of filing a public issue.
 
 ## Roadmap
 
-What's already planned for the next version lives in
-[ROADMAP.md](ROADMAP.md), including two checks identified during real-world
-testing that the maturity model doesn't yet reward: custom subagent definitions and
-a positive check for a properly configured `.cursor/mcp.json`.
+What's next lives in [ROADMAP.md](ROADMAP.md): a `harness-score init`
+scaffold command that turns the diagnostic into a fixer, SARIF output for
+GitHub code-scanning integration, larger real-world corpus analyses to keep
+calibrating the maturity model, and first-class plugins for more tools
+beyond Cursor and Claude Code ([PLUGINS-ROADMAP.md](PLUGINS-ROADMAP.md)).
 
 ## License
 

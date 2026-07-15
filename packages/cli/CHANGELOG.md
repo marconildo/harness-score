@@ -1,5 +1,31 @@
 # harness-score
 
+## 1.0.0
+
+### Major Changes
+
+- **Harness Score 1.0.0** — first stable major release.
+
+  Harness Score is now a general-purpose harness-maturity platform, not a
+  Cursor-specific tool: one scan scores the harness a repository builds for
+  Cursor, Claude Code, Windsurf, Cline, Continue, Codex, and other AI coding
+  tools, with OR semantics across equivalent artifacts.
+
+  With 1.0, the public surface is stable under semantic versioning:
+
+  - Check IDs (`CTX-01` … `HYG-08`) are stable identifiers.
+  - The `Report` JSON shape (`--json` and the typed programmatic API) only
+    gains fields in minors; removals/renames are major.
+  - CLI flags and exit codes (`0` pass, `1` gate failure, `2` usage error)
+    are stable.
+  - Maturity-model evolution (new checks, point totals, thresholds) ships in
+    minor versions and is flagged by `--diff`'s `maturityModelChanged`.
+  - The determinism invariants — zero LLM calls, zero network access, zero
+    runtime dependencies, same input ⇒ same output — are permanent.
+
+  No breaking changes relative to v0.6.0: scores, output shapes, and flags are
+  identical. The major bump marks API stability, not disruption.
+
 ## 0.6.0
 
 ### Minor Changes

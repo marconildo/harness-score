@@ -35,6 +35,8 @@ write-up.
 
 ## Supported versions
 
-This project is pre-1.0 and moves fast; only the latest published version on
-npm/JSR/GitHub Packages is supported. Please upgrade before reporting an
-issue that might already be fixed.
+Only the latest published version on npm/JSR/GitHub Packages is supported.
+The project follows semantic versioning as of v1.0.0, but security fixes are
+released forward (in the next patch/minor), not backported to older
+versions. Please upgrade before reporting an issue that might already be
+fixed.

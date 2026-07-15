@@ -162,13 +162,13 @@ If you switch primary tools (e.g., Cursor → Claude Code), the harness transfer
 
 ## Limitations and roadmap
 
-**Current (v0.6.0):**
+**Current (v1.0.0):**
 
 - Plugin support is staggered: **Cursor** (flagship, full audit-and-fix), **Claude Code** (Phase 0, read-only audit), others TBD (see [PLUGINS-ROADMAP.md](https://github.com/paladini/harness-score/blob/main/PLUGINS-ROADMAP.md)).
 - The CLI is tool-aware and fully multi-harness: the terminal and markdown reports show a `Detected:` line naming every recognized tool, and `--json` output includes the same list as a `detectedHarnesses` array. Plugins catch up over time.
 - Hooks are recognized for Cursor and Claude Code only — other tools' hook systems (as they emerge) need registry entries.
 
-**Future (v1.0.0 and beyond):**
+**Planned (post-1.0):**
 
 - Interactive `harness-score init` scaffolding (deterministic templates per tool).
 - SARIF output for enterprise CI/security tooling integration.

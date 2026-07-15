@@ -1,7 +1,11 @@
 # Roadmap
 
-Harness Score is pre-1.0 and the maturity model is expected to keep evolving as we
-test it against real repositories. This document tracks what's already
+Harness Score is **1.0**: check IDs, the `Report` JSON shape, CLI flags, and
+exit codes are stable public API under semantic versioning (see the
+[Stability & versioning](README.md#stability--versioning) statement). The
+maturity model itself keeps evolving as we test it against real
+repositories — model changes ship in minor versions and are flagged by
+`--diff`'s `maturityModelChanged`. This document tracks what's already
 planned so contributors (and future sessions) don't duplicate discovery
 work. It is not a promise of dates — just of intent and design direction.
 
@@ -79,31 +83,29 @@ touchpoint that makes a CI tool sticky.
   repeated pushes update one comment). Requires the consumer to grant
   `pull-requests: write` — documented in `action/README.md`, not assumed.
 
-## Planned for v1.0.0
+## Shipped in v1.0.0
 
-### Site redesign, docs expansion, and multi-tool branding — in progress
+### General-purpose positioning + API stability — done
 
-The v1.0.0 release marks the project's transition from "Cursor-focused tool" to
-"universal harness maturity platform." Key work:
+The v1.0.0 release marks the project's transition from "Cursor-focused tool"
+to "general-purpose harness maturity platform," and freezes the public
+surface under semver. The multi-tool work landed incrementally — the engine
+in v0.4.0 (OR-semantics scanning), equivalence fixes in v0.5.0, docs/site
+messaging and the "Multi-Harness Support" chapter in v0.5.0–v0.6.0, detected
+harnesses surfaced in reports in v0.6.0 — and v1.0.0 capped it with:
 
-- **Site redesign**: HomeLanding.vue enhancements, clearer tool-agnostic messaging,
-  prominent call-out that any AI tool benefits from the same harness.
-- **Docs expansion**: New "Multi-Harness Support" chapter (added in v0.5.0 docs
-  reorg) explaining OR semantics, supported tools table, migration patterns,
-  and FAQs. Updated landing page and navigation to surface multi-tool story first.
-- **Updated README**: Multi-tool language, clarified that Cursor is the flagship
-  but not exclusive, mention of Claude Code, Windsurf, and others gaining first-class
-  support in plugins over time.
-- **Plugin roadmap clarity**: Formalize the staggered plugin launch — Cursor
-  (v0.x shipped), Claude Code (Phase 0 read-only audit), Windsurf and others
-  TBD. **[PLUGINS-ROADMAP.md](PLUGINS-ROADMAP.md)** exists; keep it
-  consumer-facing and current as phases land.
+- **A public stability statement** (README "Stability & versioning"): check
+  IDs, `Report` JSON shape, CLI flags, and exit codes are stable API;
+  maturity-model evolution ships in minors and is flagged by
+  `maturityModelChanged`; the determinism invariants (zero LLM, zero
+  network, zero runtime deps) are permanent.
+- **Supported-versions policy** updated in [SECURITY.md](SECURITY.md) for
+  the semver era.
+- **Docs and README** scrubbed of pre-1.0 language; landing page, guide, and
+  plugin READMEs updated.
 
-**Rationale:** v0.4.0 shipped the *engine* (multi-harness OR semantics in the
-scanner). v1.0.0 ships the *story* — making it clear that this tool measures
-harness maturity *across tools* and that a single well-built harness benefits
-every AI agent in your workflow. No check changes, no maturity-model shifts — just
-clarity and docs.
+No check changes, no maturity-model shifts — the score a repository gets
+from v1.0.0 is identical to v0.6.0.
 
 ## Shipped in v0.4.0
 
@@ -193,9 +195,9 @@ content-only bump (terminology + `plugins/` move regularized).
 Known model note carried forward (not addressed here): `detectHarnesses`
 reports antigravity+codex together for shared `.agents/` paths, and
 `fixtures/`-style example directories inflate a root repo's detected list via
-`(^|\/)` path matching — both candidates for a v1.0.0 pass.
+`(^|\/)` path matching — both candidates for a post-1.0 accuracy pass.
 
-## Also under consideration (not yet scheduled)
+## Next up (post-1.0, not yet scheduled)
 
 - **`harness-score init`** — a scaffold command that generates starter
   artifacts (an `AGENTS.md`, a Cursor rule, a `hooks.json`) for the
@@ -204,6 +206,11 @@ reports antigravity+codex together for shared `.agents/` paths, and
   own design session (deterministic templates only, no LLM — keeps the
   zero-runtime-deps and no-network invariants).
 - **SARIF output** for GitHub code-scanning tab integration.
+- **Real-world corpus analyses** — scanning a large corpus of public
+  repositories to calibrate level thresholds and check weights against how
+  teams actually build harnesses (the v0.5.0 synthetic 8-repo corpus proved
+  the method; the next step is scale). Expect published findings, not just
+  internal calibration.
 - Recognizing more linters/test runners/type checkers as the ecosystem
   detector (`detectEcosystems`) sees them in the wild — this is the kind of
   contribution that needs no design discussion, just a PR (see

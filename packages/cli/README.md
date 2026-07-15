@@ -51,7 +51,7 @@ harness-score --min-level 3       # exit 1 if below L3 — the CI gate
 Example:
 
 ```
-  harness-score v0.6.0  /work/my-app
+  harness-score v1.0.0  /work/my-app
 
   Maturity: L2 · Guided   Score: 66/108 (61%)
   Detected: Cursor, Claude Code
