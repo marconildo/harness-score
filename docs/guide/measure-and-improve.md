@@ -103,7 +103,7 @@ payload) and `--md` (adds a "Compared to baseline" section) too — this is
 what the GitHub Action uses to post "harness score moved from L2 to L3"
 comments on pull requests.
 
-## The Cursor plugin
+## The Cursor plugin {#the-cursor-plugin}
 
 Install **Harness Score** from [its plugin directory in this repo](https://github.com/paladini/harness-score/tree/main/plugins/cursor)
 (the Cursor Marketplace listing is submitted and pending review — this link
