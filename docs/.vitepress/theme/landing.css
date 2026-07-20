@@ -349,10 +349,14 @@
   padding: 0;
 }
 
-.VPHomeHero .image img,
-.VPHomeHero .image-container {
-  max-width: 88px !important;
-  max-height: 88px !important;
+/* Desktop side-by-side hero only — VitePress stacks the image above the
+   title below 960px with negative margins, which overlaps the headline. */
+@media (min-width: 960px) {
+  .VPHomeHero .image img,
+  .VPHomeHero .image-container {
+    max-width: 88px !important;
+    max-height: 88px !important;
+  }
 }
 
 .hs-landing__lang {
@@ -392,10 +396,11 @@
   font-weight: 700;
 }
 
-@media (max-width: 768px) {
-  /* Logo already appears in the header; hide floating hero image on narrow screens */
+/* Match VitePress's stacked-hero breakpoint (960px), not just phones.
+   Logo already appears in the header on these widths. */
+@media (max-width: 959px) {
   .VPHomeHero .image {
-    display: none;
+    display: none !important;
   }
 
   .VPHomeHero .actions {
