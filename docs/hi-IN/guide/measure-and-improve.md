@@ -96,7 +96,7 @@ harness-score --diff baseline.json     # see what moved
 - **`/harness-audit`** — खुले workspace पर स्कैनर चलाता है और एजेंट से रिपोर्ट उसकी शीर्ष remediations के साथ प्रस्तुत करवाता है।
 - **`harness-engineering` skill** — जब आप «ठीक करो» या «मेरा harness सुधारो» कहते हैं, तो एजेंट जानता है कि इस गाइड की recipes के अनुसार missing artifacts कैसे लिखने हैं।
 
-विश्लेषण हमेशा deterministic CLI ही है; मॉडल केवल परिणाम दिखाता है और आपके कहे अनुसार fixes लागू करता है।
+विश्लेषण हमेशा deterministic CLI ही है; मॉडल केवल परिणाम दिखाता है और आपके कहे अनुसार सुधार लागू करता है।
 
 ## CI गेट {#ci-gate}
 
@@ -396,7 +396,7 @@ README hero, blog posts, या social previews के लिए बैनर (`
 
 #### CTX-02 · Context file is substantive — 3 pts {#ctx-02}
 ≥20 meaningful lines और ≥2 headings — stub को अंक नहीं मिलते।
-**सुधार:** layout, build और test commands, conventions, और no-go zones कवर करें।
+**सुधार:** layout, build और test commands, conventions, और वर्जित क्षेत्र कवर करें।
 विवरण से commands; rules paste करने के बजाय उनकी ओर point करें।
 
 #### CTX-03 · Scoped rules in use — 4 pts {#ctx-03}
@@ -405,7 +405,7 @@ README hero, blog posts, या social previews के लिए बैनर (`
 `.github/instructions/*.instructions.md`, `.agents/rules/*`)। subdirectories में nested context
 फ़ाइलें (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md` root के नीचे कहीं भी) भी गिनती हैं — Claude
 Code और Codex जैसे टूल में ये directory-scoped rules हैं।
-**सुधार:** एक छोटी always-on rule से शुरू करें जिसमें non-negotiables हों,
+**सुधार:** एक छोटी always-on rule से शुरू करें जिसमें अपरिहार्य नियम हों,
 फिर प्रति area path-scoped rules (या प्रति subtree nested context फ़ाइलें) जोड़ें।
 
 #### CTX-04 · Rules have valid frontmatter — 3 pts {#ctx-04}
@@ -484,7 +484,7 @@ Version/metadata मौजूद; हर registered event आपके टूल
 gate hook registered (Cursor: `beforeShellExecution`, `beforeMCPExecution`,
 `preToolUse`, या `beforeReadFile`; Claude Code: `PreToolUse`)।
 **सुधार:** अध्याय 5 का destructive-command deny gate जोड़ें — prose rules
-requests हैं; gates facts हैं।
+अनुरोध हैं; gates तथ्य हैं।
 
 #### HKS-04 · Feedback hook observes output — 2 pts {#hks-04}
 feedback hook registered (Cursor: `afterFileEdit`, `postToolUse`, …;
@@ -494,7 +494,7 @@ Claude Code: `PostToolUse`)।
 #### HKS-05 · Hook scripts committed — 2 pts {#hks-05}
 hooks config द्वारा reference किए गए scripts रिपॉ में मौजूद हैं।
 **सुधार:** उन्हें commit करें; missing script की ओर point करने वाला hook author की
-machine के अलावा हर machine पर fail open होता है।
+machine के अलावा हर machine पर खुला विफल होता है।
 
 ### Sensors & Feedback (20 pts)
 
@@ -532,8 +532,7 @@ GitHub Actions workflow (या GitLab/CircleCI/Jenkins equivalent)।
 fire किए।
 
 #### CI-03 · CI runs lint/typecheck — 3 pts {#ci-03}
-**सुधार:** सस्ते computational sensors हर push पर belong — quality
-left रखें।
+**सुधार:** सस्ते computational sensors हर push पर belong — **गुणवत्ता को बाएँ रखें**।
 
 #### CI-04 · Pre-commit checks installed — 3 pts {#ci-04}
 husky/lint-staged, `pre-commit`, या lefthook।

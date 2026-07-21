@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: Harness Score
-  text: आपका AI coding harness कितना mature है?
-  tagline: Cursor, Claude Code, Windsurf आदि टूल के लिए AI coding harness मापने वाला एक deterministic कमांड। AGENTS.md, rules, hooks, tests और CI स्कैन करता है। स्कैन में कोई LLM कॉल नहीं, नेटवर्क नहीं — एक ही commit पर हमेशा वही स्कोर।
+  text: आपका AI कोडिंग harness कितना परिपक्व है?
+  tagline: Cursor, Claude Code, Windsurf जैसे टूल के लिए harness परिपक्वता मापने वाला एक निश्चित (deterministic) स्कैनर। AGENTS.md, rules, hooks, tests और CI की जाँच करता है — बिना LLM कॉल, बिना नेटवर्क; एक ही commit पर हमेशा वही स्कोर।
   image:
     src: /logo.svg
     alt: Harness Score
@@ -16,6 +16,6 @@ hero:
       text: पढ़ना शुरू करें
       link: /hi-IN/guide/what-is-harness-engineering
     - theme: alt
-      text: plugins देखें
+      text: प्लगइन देखें
       link: https://github.com/paladini/harness-score/tree/main/plugins
 ---

@@ -1,12 +1,12 @@
 # Multi-Harness Support
 
-**v0.4.0** से Harness Score आपके AI coding harness की maturity **किसी भी tool** पर मापता है — केवल Cursor पर नहीं। चाहे Cursor, Claude Code, Windsurf, Cline, Continue, Codex, या कोई और AI-first IDE या editor उपयोग करें, वही 108-point scoring model लागू होता है।
+**v0.4.0** से Harness Score आपके AI coding harness की परिपक्वता **किसी भी tool** पर मापता है — केवल Cursor पर नहीं। चाहे Cursor, Claude Code, Windsurf, Cline, Continue, Codex, या कोई और AI-first IDE या editor उपयोग करें, वही 108-point scoring model लागू होता है।
 
 ## Multi-harness support क्यों मायने रखता है
 
 harness tool-agnostic है। अच्छी तरह लिखा `AGENTS.md`, secrets सुरक्षित रखने वाला `.gitignore`, tests चलाने वाला CI pipeline — Cursor, Claude Code, Windsurf या किसी agent के लिए समान रूप से काम करते हैं। एक बार बनाया harness infrastructure आपके project में *हर* AI tool को लाभ देता है।
 
-Harness Score इसे explicit करता है: एक बार measure करें, कोई भी tool लाभ पाता है। Cursor harness और Claude Code harness अलग-अलग नहीं बनाते — *एक harness* बनाते हैं, और हर compatible tool जो समझता है वह हिस्सा inherit करता है।
+Harness Score इसे स्पष्ट करता है: एक बार मापें, कोई भी tool लाभ पाता है। Cursor harness और Claude Code harness अलग-अलग नहीं बनाते — *एक harness* बनाते हैं, और हर compatible tool जो समझता है वह हिस्सा inherit करता है।
 
 ## कैसे काम करता है: OR semantics
 

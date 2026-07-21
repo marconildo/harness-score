@@ -58,14 +58,14 @@ const guideItemsZh: SidebarItem[] = [
 
 const guideItemsHi: SidebarItem[] = [
   { text: '1 · harness engineering क्या है', link: '/guide/what-is-harness-engineering' },
-  { text: '2 · Multi-harness support', link: '/guide/multi-harness' },
+  { text: '2 · Multi-harness समर्थन', link: '/guide/multi-harness' },
   { text: '3 · Cursor harness surface', link: '/guide/cursor-harness-surface' },
   { text: '4 · Guides — feedforward', link: '/guide/guides-feedforward' },
   { text: '5 · Sensors — feedback', link: '/guide/sensors-feedback' },
-  { text: '6 · Guardrails और safety', link: '/guide/guardrails-and-safety' },
-  { text: '7 · Maturity model', link: '/guide/maturity-model' },
-  { text: '8 · Measure और improve', link: '/guide/measure-and-improve' },
-  { text: '9 · References', link: '/guide/references' },
+  { text: '6 · Guardrails और सुरक्षा', link: '/guide/guardrails-and-safety' },
+  { text: '7 · परिपक्वता मॉडल', link: '/guide/maturity-model' },
+  { text: '8 · मापें और सुधारें', link: '/guide/measure-and-improve' },
+  { text: '9 · संदर्भ', link: '/guide/references' },
 ];
 
 const sharedTheme = {
@@ -82,7 +82,18 @@ export default defineConfig({
     'The harness engineering guide for AI coding agents — measure your harness maturity across Cursor, Claude Code, Windsurf, and other tools with a deterministic scanner.',
   base: BASE,
   lastUpdated: true,
-  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: `${BASE}favicon.svg` }]],
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${BASE}favicon.svg` }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
+    [
+      'link',
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap',
+      },
+    ],
+  ],
   locales: {
     root: {
       label: 'English',
@@ -204,15 +215,14 @@ export default defineConfig({
       label: 'हिन्दी',
       lang: 'hi-IN',
       link: '/hi-IN/',
-      description:
-        'AI coding agents के लिए harness engineering गाइड — deterministic scanner से harness maturity मापें।',
+      description: 'AI कोडिंग एजेंटों के लिए harness engineering गाइड — निश्चित scanner से harness परिपक्वता मापें।',
       themeConfig: {
         ...sharedTheme,
         nav: [
           { text: 'गाइड', link: '/hi-IN/guide/what-is-harness-engineering' },
           { text: 'Multi-harness', link: '/hi-IN/guide/multi-harness' },
-          { text: 'Maturity', link: '/hi-IN/guide/maturity-model' },
-          { text: 'Scanner', link: '/hi-IN/guide/measure-and-improve' },
+          { text: 'परिपक्वता', link: '/hi-IN/guide/maturity-model' },
+          { text: 'स्कैनर', link: '/hi-IN/guide/measure-and-improve' },
         ],
         sidebar: [
           { text: 'गाइड', items: guideItemsHi.map((i) => ({ text: i.text, link: `/hi-IN${i.link}` })) },

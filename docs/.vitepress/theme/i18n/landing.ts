@@ -83,7 +83,7 @@ export const LANDING: Record<LocaleId, LandingCopy> = {
       {
         title: 'npm',
         cmd: 'npm i -g harness-score',
-        note: 'v1.1.0 on npmjs.org',
+        note: 'v1.2.0 on npmjs.org',
         href: 'https://www.npmjs.com/package/harness-score',
         external: true,
         primary: false,
@@ -219,7 +219,7 @@ export const LANDING: Record<LocaleId, LandingCopy> = {
       {
         title: 'npm',
         cmd: 'npm i -g harness-score',
-        note: 'v1.1.0 no npmjs.org',
+        note: 'v1.2.0 no npmjs.org',
         href: 'https://www.npmjs.com/package/harness-score',
         external: true,
         primary: false,
@@ -355,7 +355,7 @@ export const LANDING: Record<LocaleId, LandingCopy> = {
       {
         title: 'npm',
         cmd: 'npm i -g harness-score',
-        note: 'v1.1.0 en npmjs.org',
+        note: 'v1.2.0 en npmjs.org',
         href: 'https://www.npmjs.com/package/harness-score',
         external: true,
         primary: false,
@@ -491,7 +491,7 @@ export const LANDING: Record<LocaleId, LandingCopy> = {
       {
         title: 'npm',
         cmd: 'npm i -g harness-score',
-        note: 'v1.1.0 在 npmjs.org',
+        note: 'v1.2.0 在 npmjs.org',
         href: 'https://www.npmjs.com/package/harness-score',
         external: true,
         primary: false,
@@ -523,7 +523,7 @@ export const LANDING: Record<LocaleId, LandingCopy> = {
     ],
     pitch: {
       eyebrow: '问题',
-      title: 'AI 智能体的可靠性取决于周围的 harness。',
+      title: 'AI 智能体的可靠性取决于其 harness。',
       lede: '两个仓库可以运行同一模型，结果却天差地别。一个有引导智能体的指南、验证工作的传感器、阻止损害的 guardrails — 另一个什么都没有。Harness Score 在几秒内测量该 harness，适用于任何 AI 工具，并指出下一步该改进什么。',
     },
     steps: {
@@ -619,7 +619,7 @@ export const LANDING: Record<LocaleId, LandingCopy> = {
       {
         title: 'एक बार चलाएँ',
         cmd: 'npx harness-score',
-        note: 'इंस्टॉल की ज़रूरत नहीं। किसी भी repo path पर चलाएँ।',
+        note: 'इंस्टॉल की ज़रूरत नहीं। किसी भी रिपॉज़िटरी path पर चलाएँ।',
         href: '/hi-IN/guide/measure-and-improve',
         external: false,
         primary: true,
@@ -627,15 +627,15 @@ export const LANDING: Record<LocaleId, LandingCopy> = {
       {
         title: 'npm',
         cmd: 'npm i -g harness-score',
-        note: 'v1.1.0 npmjs.org पर',
+        note: 'v1.2.0 npmjs.org पर',
         href: 'https://www.npmjs.com/package/harness-score',
         external: true,
         primary: false,
       },
       {
-        title: 'Cursor plugin',
+        title: 'Cursor प्लगइन',
         cmd: '/harness-audit',
-        note: 'Repo में — Marketplace जल्द',
+        note: 'रिपॉज़िटरी में — Marketplace जल्द',
         href: 'https://github.com/paladini/harness-score/tree/main/plugins/cursor',
         external: true,
         primary: false,
@@ -651,7 +651,7 @@ export const LANDING: Record<LocaleId, LandingCopy> = {
       {
         title: 'JSR',
         cmd: 'npx jsr add @paladini/harness-score',
-        note: 'Deno और Bun users',
+        note: 'Deno और Bun उपयोगकर्ताओं के लिए',
         href: 'https://jsr.io/@paladini/harness-score',
         external: true,
         primary: false,
@@ -660,58 +660,58 @@ export const LANDING: Record<LocaleId, LandingCopy> = {
     pitch: {
       eyebrow: 'समस्या',
       title: 'AI एजेंट की विश्वसनीयता उसके harness पर निर्भर करती है।',
-      lede: 'दो repos एक ही model चला सकते हैं — परिणाम बिल्कुल अलग। एक में feedforward guides, sensors जो काम verify करते हैं, और guardrails जो नुकसान रोकते हैं; दूसरे में कुछ नहीं। Harness Score किसी भी AI tool के लिए harness को सेकंडों में मापता है और अगला सुधार स्पष्ट बताता है।',
+      lede: 'दो रिपॉज़िटरी एक ही मॉडल चला सकती हैं — परिणाम बिल्कुल अलग। एक में feedforward guides, sensors जो काम verify करते हैं, और guardrails जो नुकसान रोकते हैं; दूसरे में कुछ नहीं। Harness Score किसी भी AI टूल के लिए harness को सेकंडों में मापता है और अगला सुधार स्पष्ट बताता है।',
     },
     steps: {
       eyebrow: 'कैसे काम करता है',
       items: [
         {
-          title: 'Scan',
-          body: 'Repo में npx harness-score चलाएँ। CLI सिर्फ़ filesystem पढ़ती है — 36 checks, zero LLM calls, zero network.',
+          title: 'स्कैन',
+          body: 'रिपॉज़िटरी में npx harness-score चलाएँ। CLI सिर्फ़ filesystem पढ़ती है — 36 checks, zero LLM calls, zero network.',
         },
         {
-          title: 'Level',
-          body: 'L0–L4 maturity level, छह dimensions में 108 points का breakdown, और अगले level के लिए exact gaps।',
+          title: 'स्तर',
+          body: 'L0–L4 परिपक्वता स्तर, छह dimensions में 108 points का breakdown, और अगले स्तर की सटीक कमियाँ।',
         },
         {
-          title: 'Fix',
-          body: 'हर fail हुआ check guide में remediation recipe से जुड़ा है — या plugin का /harness-audit command चलाकर fixes लागू करें।',
+          title: 'सुधार',
+          body: 'हर fail हुआ check गाइड में remediation recipe से जुड़ा है — या प्लगइन का /harness-audit command चलाकर सुधार लागू करें।',
         },
       ],
     },
     terminal: {
       eyebrow: 'नमूना output',
-      title: 'Diagnosis, guesswork नहीं',
-      lede: 'Deterministic: same commit, same score — laptop या CI में। Merge gate के लिए --min-level 3 — maturity सिर्फ़ ऊपर जाए।',
-      cta: 'Scanner चलाएँ →',
+      title: 'निदान, अनुमान नहीं',
+      lede: 'निश्चित: same commit, same score — laptop या CI में। Merge gate के लिए --min-level 3 — परिपक्वता सिर्फ़ ऊपर जाए।',
+      cta: 'स्कैनर चलाएँ →',
       ariaLabel: 'harness-score नमूना output',
     },
     install: { eyebrow: 'शुरू करें', title: 'जहाँ काम करते हैं वहाँ install करें' },
     maturity: {
-      eyebrow: 'Maturity ladder',
-      title: 'पाँच levels जिन्हें measure और gate किया जा सकता है',
-      lede: 'Levels harness के *shape* पर depend करते हैं — सिर्फ़ points पर नहीं। Tests के बिना 80% docs = L1, L3 नहीं।',
-      cta: 'पूरा maturity model →',
+      eyebrow: 'परिपक्वता सीढ़ी',
+      title: 'पाँच स्तर जिन्हें measure और gate किया जा सकता है',
+      lede: 'स्तर harness की *संरचना* पर depend करते हैं — सिर्फ़ points पर नहीं। Tests के बिना 80% docs = L1, L3 नहीं।',
+      cta: 'पूरा परिपक्वता मॉडल →',
     },
     tools: {
-      eyebrow: 'Compatible',
+      eyebrow: 'संगत',
       title: 'कोई भी AI coding tool',
-      lede: 'एक harness, एक maturity model, कई tools। Cursor, Claude Code, Windsurf या कोई और — Harness Score सबको एक जैसे measure करता है।',
-      cta: 'Multi-harness support →',
+      lede: 'एक harness, एक परिपक्वता मॉडल, कई tools। Cursor, Claude Code, Windsurf या कोई और — Harness Score सबको एक जैसे measure करता है।',
+      cta: 'Multi-harness समर्थन →',
     },
     showcase: {
-      eyebrow: 'Score दिखाएँ',
+      eyebrow: 'स्कोर दिखाएँ',
       title: 'README brand बैज',
       lede: '112×20 capsule बैज shield row के लिए। CI regenerate करती है, या static badge-lN.svg pin करें। Markdown, HTML, iframe, JSX embeds copy करें।',
-      gallery: 'Gallery',
-      embeds: 'Embed snippets',
-      cardAlt: 'Harness Score L4 · self-correcting share card',
+      gallery: 'गैलरी',
+      embeds: 'एम्बेड snippets',
+      cardAlt: 'Harness Score L4 · स्व-सुधार share card',
     },
     products: {
       eyebrow: 'इस repo में',
       items: [
         {
-          title: 'Guide',
+          title: 'गाइड',
           body: '8 chapters — AI coding agents के लिए harness engineering: feedforward, sensors, guardrails.',
           href: '/hi-IN/guide/what-is-harness-engineering',
         },
@@ -721,8 +721,8 @@ export const LANDING: Record<LocaleId, LandingCopy> = {
           href: '/hi-IN/guide/measure-and-improve',
         },
         {
-          title: 'Cursor plugin',
-          body: '/harness-audit command + skill — scan में मिले हर gap को fix करें।',
+          title: 'Cursor प्लगइन',
+          body: '/harness-audit command + skill — scan में मिली हर कमी को सुधारें।',
           href: 'https://github.com/paladini/harness-score/tree/main/plugins/cursor',
           external: true,
         },

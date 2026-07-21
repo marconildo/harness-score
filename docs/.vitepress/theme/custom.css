@@ -53,7 +53,21 @@
   border-radius: 8px;
 }
 
-/* Devanagari (hi-IN): conjuncts and matras need a reliable fallback alongside Inter. */
+/* CJK + Devanagari: web fonts plus slightly taller line-height for matras and hanzi. */
 :root {
-  --vp-font-family-base: "Inter", "Noto Sans Devanagari", system-ui, sans-serif;
+  --vp-font-family-base: "Inter", "Noto Sans SC", "Noto Sans Devanagari", system-ui, sans-serif;
+}
+
+html[lang="hi-IN"] .vp-doc p,
+html[lang="hi-IN"] .vp-doc li,
+html[lang="hi-IN"] .hs-landing,
+html[lang="hi-IN"] .VPHome {
+  line-height: 1.65;
+}
+
+html[lang="zh-CN"] .vp-doc p,
+html[lang="zh-CN"] .vp-doc li,
+html[lang="zh-CN"] .hs-landing,
+html[lang="zh-CN"] .VPHome {
+  line-height: 1.7;
 }

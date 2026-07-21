@@ -1,16 +1,17 @@
 # Guardrails और Safety
 
-Guides suggest करते हैं। Sensors detect करते हैं। **Guardrails prevent करते हैं।** यह अध्याय harness की वह परत कवर करता है जो तब भी कायम रहती है जब मॉडल हर निर्देश ignore कर दे — क्योंकि यह मॉडल के कुछ पढ़ने पर निर्भर नहीं।
+Guides सुझाव देते हैं। Sensors पता लगाते हैं। **Guardrails रोकते हैं।** यह अध्याय harness की वह परत कवर करता है जो तब भी कायम रहती है जब मॉडल हर निर्देश ignore कर दे — क्योंकि यह मॉडल के कुछ पढ़ने पर निर्भर नहीं।
 
 ## Prose guardrail क्यों नहीं है
 
-«कभी `git push --force` न चलाएँ» वाली rule probabilistic system से अनुरोध है। आमतौर पर मानी जाएगी। Destructive, irreversible, या credential-touching operations के लिए «आमतौर पर» गलत reliability class है। उनके लिए check **मॉडल के बाहर** होना चाहिए, machinery में जिसे मॉडल skip नहीं कर सकता: hooks, permissions, repository hygiene।
+«कभी `git push --force` न चलाएँ» वाली rule probabilistic system से अनुरोध है। आमतौर पर मानी जाएगी। विनाशकारी, अपरिवर्तनीय, या credential-touching operations के लिए «आमतौर पर» गलत विश्वसनीयता श्रेणी है। उनके लिए check **मॉडल के बाहर** होना चाहिए, machinery में जिसे मॉडल skip नहीं कर सकता: hooks, permissions, repository hygiene।
 
 अध्याय 3 की escalation ladder यहाँ समाप्त होती है: बार-बार violate होने वाला guidance rule → sensor → **gate** पर जाता है।
 
 ## Gate hooks
 
-Cursor के gating events — `beforeShellExecution`, `beforeMCPExecution`, `preToolUse`, `beforeReadFile` — action से *पहले* आपका script चलाते हैं और `allow`, `deny`, या `ask` उत्तर देने देते हैं:
+Cursor के gating events — `beforeShellExecution`, `beforeMCPExecution`,
+`preToolUse`, `beforeReadFile` — action से *पहले* आपका script चलाते हैं और `allow`, `deny`, या `ask` उत्तर देने देते हैं:
 
 ```js
 // .cursor/hooks/guard-shell.js — deny destructive commands
@@ -52,14 +53,14 @@ Design notes: dangerous list के लिए *closed* fail (exit code 2 block),
 
 ## Secret hygiene
 
-एजेंट आपका working tree पढ़ता है; उसमें कुछ भी context, commit, या generated file में समा सकता है। Deterministic hygiene rules:
+एजेंट आपका working tree पढ़ता है; उसमें कुछ भी context, commit, या generated file में समा सकता है। निश्चित hygiene rules:
 
 1. **`.gitignore` `.env` और `.env.*` cover करे** (`.env.example` allow)। यह सबसे सस्ता guardrail है।
 2. **Tree में real `.env` files न हों** जहाँ avoidable; templates required variables document करें।
 3. **`mcp.json` `${ENV_VAR}` interpolation use करे, literal keys नहीं।** Inlined API key वाला MCP config हर clone पर published secret है।
 4. **Harness files में tokens नहीं।** `AGENTS.md`, rules, hooks configs *हर session पर model context में load* होते हैं — वहाँ key design से exfiltrated है।
 
-`harness-score` चारों (HYG-02 … HYG-06) credential-signature matching से check करता है — deterministically, offline।
+`harness-score` चारों (HYG-02 … HYG-06) credential-signature matching से check करता है — निश्चित रूप से, offline।
 
 ## Prompt-injection awareness
 
