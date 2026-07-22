@@ -8,11 +8,13 @@
  * files, so this closes that gap rather than asking a maintainer to keep
  * three files in sync by memory.
  */
+import { spawnSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const CLI_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'packages', 'cli');
+const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
+const CLI_DIR = path.join(ROOT, 'packages', 'cli');
 
 const pkgPath = path.join(CLI_DIR, 'package.json');
 const scorePath = path.join(CLI_DIR, 'src', 'score.ts');
@@ -36,5 +38,18 @@ fs.writeFileSync(scorePath, scoreSrc.replace(toolVersionRe, `export const TOOL_V
 const jsr = JSON.parse(fs.readFileSync(jsrPath, 'utf8'));
 jsr.version = version;
 fs.writeFileSync(jsrPath, `${JSON.stringify(jsr, null, 2)}\n`);
+
+// JSON.stringify expands short arrays onto multiple lines; biome's formatter
+// collapses them. Without this pass, `version-packages` leaves main CI red
+// (exactly what broke the v1.3.1 release commit).
+const format = spawnSync('npx', ['biome', 'format', '--write', jsrPath], {
+  cwd: ROOT,
+  stdio: 'inherit',
+  shell: process.platform === 'win32',
+});
+if (format.status !== 0) {
+  console.error('Failed to biome-format packages/cli/jsr.json after version sync.');
+  process.exit(format.status ?? 1);
+}
 
 console.log(`Synced TOOL_VERSION and jsr.json to ${version}.`);

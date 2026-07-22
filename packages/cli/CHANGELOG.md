@@ -1,5 +1,11 @@
 # harness-score
 
+## 1.3.2
+
+### Patch Changes
+
+- Fix the v1.3.1 release foot-gun: `sync-version.mjs` now biome-formats `jsr.json` after rewriting it (so release commits stay CI-green), and `package.json` uses npm 11's canonical `bin` / `repository.url` forms so Trusted Publishing no longer warns that the CLI bin was "invalid and removed".
+
 ## 1.3.1
 
 ### Patch Changes
